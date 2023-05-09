@@ -22,6 +22,7 @@ public class Chessboard {
             }
         }
     }
+    //try git
 
     private void initPieces() {
         grid[0][0].setPiece(new ChessPiece(PlayerColor.BLUE, "Elephant",8));

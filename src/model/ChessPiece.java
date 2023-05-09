@@ -17,6 +17,7 @@ public class ChessPiece {
 
     public boolean canCapture(ChessPiece target) {
         // TODO: Finish this method!
+        //
         if (this.rank>=target.rank&&(this.getName().equals("Cat")&&target.getName().equals("Elephant"))){
             return true;
         }else {
