@@ -143,11 +143,16 @@ public class ChessboardComponent extends JComponent {
         }
     }
 }
+//测试git使用
 
-//这段代码定义了一个名为ChessboardComponent的类，它继承自JComponent。该类表示面板上的棋盘组件对象。在构造函数中，根据传入的参数chessSize计算出棋子大小，并设置组件大小和布局方式。initiateGridComponents()方法用于初始化网格单元格并将其添加到面板上。initiateChessComponent(Chessboard chessboard)方法用于根据传入的棋盘信息初始化棋子组件并将其添加到相应位置上。
+//这段代码定义了一个名为ChessboardComponent的类，它继承自JComponent。该类表示面板上的棋盘组件对象。
+// 在构造函数中，根据传入的参数chessSize计算出棋子大小，并设置组件大小和布局方式。initiateGridComponents()方法用于初始化网格单元格并将其添加到面板上。
+// initiateChessComponent(Chessboard chessboard)方法用于根据传入的棋盘信息初始化棋子组件并将其添加到相应位置上。
 //
-//registerController(GameController gameController)方法用于注册游戏控制器以便处理玩家点击事件。setChessComponentAtGrid(ChessboardPoint point, ElephantChessComponent chess)和removeChessComponentAtGrid(ChessboardPoint point)方法分别用于向指定位置添加或移除象棋组件。
+//registerController(GameController gameController)方法用于注册游戏控制器以便处理玩家点击事件。
+// setChessComponentAtGrid(ChessboardPoint point, ElephantChessComponent chess)和removeChessComponentAtGrid(ChessboardPoint point)方法分别用于向指定位置添加或移除象棋组件。
 //
-//processMouseEvent(MouseEvent e)方法则是处理鼠标事件的核心部分，当玩家点击某个单元格时会触发此事件，并通过调用gameController.onPlayerClickCell()或gameController.onPlayerClickChessPiece()来通知游戏控制器进行后续操作。
+//processMouseEvent(MouseEvent e)方法则是处理鼠标事件的核心部分，当玩家点击某个单元格时会触发此事件，
+// 并通过调用gameController.onPlayerClickCell()或gameController.onPlayerClickChessPiece()来通知游戏控制器进行后续操作。
 //
 //其中还有一些辅助性质的私有成员变量和函数，如riverCell集合表示河流所在位置、getGridComponentAt(ChessboardPoint point)获取指定位置网格单元格等等。
