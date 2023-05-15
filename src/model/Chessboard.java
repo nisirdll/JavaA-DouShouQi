@@ -27,22 +27,22 @@ public class Chessboard {
     }
 
     private void initPieces() {
-        grid[2][6].setPiece(new ChessPiece(PlayerColor.RED, "Elephant",8));
-        grid[6][0].setPiece(new ChessPiece(PlayerColor.BLUE, "Elephant",8));
-        grid[0][0].setPiece(new ChessPiece(PlayerColor.RED,"Lion",7));
-        grid[8][6].setPiece(new ChessPiece(PlayerColor.BLUE,"Lion",7));
-        grid[0][6].setPiece(new ChessPiece(PlayerColor.RED,"Tiger",6));
-        grid[8][0].setPiece(new ChessPiece(PlayerColor.BLUE,"Tiger",6));
-        grid[2][2].setPiece(new ChessPiece(PlayerColor.RED,"Leopard",5));
-        grid[6][4].setPiece(new ChessPiece(PlayerColor.BLUE,"Leopard",5));
-        grid[2][4].setPiece(new ChessPiece(PlayerColor.RED,"Wolf",4));
-        grid[6][2].setPiece(new ChessPiece(PlayerColor.BLUE,"Wolf",4));
-        grid[1][1].setPiece(new ChessPiece(PlayerColor.RED,"Dog",3));
-        grid[7][5].setPiece(new ChessPiece(PlayerColor.BLUE,"Dog",3));
-        grid[1][5].setPiece(new ChessPiece(PlayerColor.RED,"Cat",2));
-        grid[7][1].setPiece(new ChessPiece(PlayerColor.BLUE,"Cat",2));
-        grid[2][0].setPiece(new ChessPiece(PlayerColor.RED,"Rat",1));
-        grid[6][6].setPiece(new ChessPiece(PlayerColor.BLUE,"Rat",1));
+        grid[2][6].setPiece(new ChessPiece(PlayerColor.RED, "Elephant", 8));
+        grid[6][0].setPiece(new ChessPiece(PlayerColor.BLUE, "Elephant", 8));
+        grid[0][0].setPiece(new ChessPiece(PlayerColor.RED, "Lion", 7));
+        grid[8][6].setPiece(new ChessPiece(PlayerColor.BLUE, "Lion", 7));
+        grid[0][6].setPiece(new ChessPiece(PlayerColor.RED, "Tiger", 6));
+        grid[8][0].setPiece(new ChessPiece(PlayerColor.BLUE, "Tiger", 6));
+        grid[2][2].setPiece(new ChessPiece(PlayerColor.RED, "Leopard", 5));
+        grid[6][4].setPiece(new ChessPiece(PlayerColor.BLUE, "Leopard", 5));
+        grid[2][4].setPiece(new ChessPiece(PlayerColor.RED, "Wolf", 4));
+        grid[6][2].setPiece(new ChessPiece(PlayerColor.BLUE, "Wolf", 4));
+        grid[1][1].setPiece(new ChessPiece(PlayerColor.RED, "Dog", 3));
+        grid[7][5].setPiece(new ChessPiece(PlayerColor.BLUE, "Dog", 3));
+        grid[1][5].setPiece(new ChessPiece(PlayerColor.RED, "Cat", 2));
+        grid[7][1].setPiece(new ChessPiece(PlayerColor.BLUE, "Cat", 2));
+        grid[2][0].setPiece(new ChessPiece(PlayerColor.RED, "Rat", 1));
+        grid[6][6].setPiece(new ChessPiece(PlayerColor.BLUE, "Rat", 1));
 
     }
 
@@ -76,24 +76,26 @@ public class Chessboard {
     }
 
     public void captureChessPiece(ChessboardPoint src, ChessboardPoint dest) {
-        if (isValidCapture(src, dest)) {
+        if (isValidCapture(src, dest)||isValidJumpSquare(src,dest)) {
             throw new IllegalArgumentException("Illegal chess capture!");
         }
         // TODO: Finish the method.
+        setChessPiece(dest,removeChessPiece(src));
     }
 
     public Cell[][] getGrid() {
         return grid;
     }
+
     public PlayerColor getChessPieceOwner(ChessboardPoint point) {
         return getGridAt(point).getPiece().getOwner();
     }
 
-    public boolean isValidMove(ChessboardPoint src, ChessboardPoint dest) {
+    public boolean isValidJumpSquare(ChessboardPoint src, ChessboardPoint dest) {
         if (getChessPieceAt(src) == null || getChessPieceAt(dest) != null) {
             return false;
         }
-        // Check if the destination is a non-water square on the other side of the river
+
         int srcRow = src.getRow();
         int srcCol = src.getCol();
         int destRow = dest.getRow();
@@ -128,39 +130,69 @@ public class Chessboard {
         return true;
     }
 
+    public boolean isValidMove(ChessboardPoint src, ChessboardPoint dest) {
+        ChessPiece srcPiece = getChessPieceAt(src);
+        ChessPiece destPiece = getChessPieceAt(dest);
+
+        if (srcPiece == null || destPiece != null) {
+            return false;
+        }
+
+        int srcRow = src.getRow();
+        int srcCol = src.getCol();
+        int destRow = dest.getRow();
+        int destCol = dest.getCol();
+
+        // Check if the source and destination are adjacent horizontally or vertically
+        if (Math.abs(srcRow - destRow) + Math.abs(srcCol - destCol) != 1) {
+            return false;
+        }
+        return true;
+    }
+
 
     public boolean isValidCapture(ChessboardPoint src, ChessboardPoint dest) {
-        riverCell.add(new ChessboardPoint(3,1));
-        riverCell.add(new ChessboardPoint(3,2));
-        riverCell.add(new ChessboardPoint(4,1));
-        riverCell.add(new ChessboardPoint(4,2));
-        riverCell.add(new ChessboardPoint(5,1));
-        riverCell.add(new ChessboardPoint(5,2));
+        riverCell.add(new ChessboardPoint(3, 1));
+        riverCell.add(new ChessboardPoint(3, 2));
+        riverCell.add(new ChessboardPoint(4, 1));
+        riverCell.add(new ChessboardPoint(4, 2));
+        riverCell.add(new ChessboardPoint(5, 1));
+        riverCell.add(new ChessboardPoint(5, 2));
 
-        riverCell.add(new ChessboardPoint(3,4));
-        riverCell.add(new ChessboardPoint(3,5));
-        riverCell.add(new ChessboardPoint(4,4));
-        riverCell.add(new ChessboardPoint(4,5));
-        riverCell.add(new ChessboardPoint(5,4));
-        riverCell.add(new ChessboardPoint(5,5));
+        riverCell.add(new ChessboardPoint(3, 4));
+        riverCell.add(new ChessboardPoint(3, 5));
+        riverCell.add(new ChessboardPoint(4, 4));
+        riverCell.add(new ChessboardPoint(4, 5));
+        riverCell.add(new ChessboardPoint(5, 4));
+        riverCell.add(new ChessboardPoint(5, 5));
         // TODO:Fix this method
         ChessPiece srcPiece = getChessPieceAt(src);
         ChessPiece destPiece = getChessPieceAt(dest);
         //If the piece is null,it's not valid
-            if (src == null || dest== null) {
-                return false;
-            }
-            // If the pieces belong to the same player, the capture is not valid.
-            if (srcPiece.getOwner() == destPiece.getOwner()) {
-                return false;
-            }
-            //If the method canCapture returns true......
-            if (srcPiece.canCapture(destPiece)){
-                if (srcPiece.getName().equals("Tiger"))
-           //cat in the river
-               if (riverCell.contains(src))
-                return true;
-            }
+        if (src == null || dest == null) {
             return false;
         }
+        // If the pieces belong to the same player, the capture is not valid.
+        if (srcPiece.getOwner() == destPiece.getOwner()) {
+            return false;
+        }
+        //If the method canCapture returns true......
+        if (srcPiece.canCapture(destPiece)) {
+            //tiger and lion jump across the river to catch the animals
+            if (srcPiece.getName().equals("Tiger") || srcPiece.getName().equals("Lion")) {
+                if (isValidJumpSquare(src, dest) && !riverCell.contains("Rat")) {
+                    return true;
+                }
+            }
+                // Rat cannot capture Elephant on land and cannot be captured on water
+                if (srcPiece.getName().equals("Rat")) {
+                    if (!riverCell.contains("Rat") && !destPiece.getName().equals("Elephant")) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+
+    }
 }
+
