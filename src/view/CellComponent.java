@@ -24,4 +24,11 @@ public class CellComponent extends JPanel {
         g.setColor(background);
         g.fillRect(1, 1, this.getWidth()-1, this.getHeight()-1);
     }
+    private void initLabels(){
+        for(int i = 0; i<9; i++){
+            for(int j = 0; j<7; j++){
+                //创建JLabel对象
+            }
+        }
+    }
 }
