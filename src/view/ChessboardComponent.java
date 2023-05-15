@@ -51,10 +51,24 @@ public class ChessboardComponent extends JComponent {
                 if (grid[i][j].getPiece() != null) {
                     ChessPiece chessPiece = grid[i][j].getPiece();
                     System.out.println(chessPiece.getOwner());
-                    gridComponents[i][j].add(
-                            new ElephantChessComponent(
-                                    chessPiece.getOwner(),
-                                    CHESS_SIZE));
+                    if (grid[i][j].getPiece().getName().equals("Elephant")) {
+                        gridComponents[i][j].add(new ElephantChessComponent(chessPiece.getOwner(), CHESS_SIZE));
+                    } else if (grid[i][j].getPiece().getName().equals("Lion")) {
+                        gridComponents[i][j].add(new LionChessComponent(chessPiece.getOwner(), CHESS_SIZE));
+                    } else if (grid[i][j].getPiece().getName().equals("Cat")) {
+                        gridComponents[i][j].add(new CatChessComponent(chessPiece.getOwner(), CHESS_SIZE));
+                    } else if (grid[i][j].getPiece().getName().equals("Tiger")) {
+                        gridComponents[i][j].add(new TigerChessComponent(chessPiece.getOwner(), CHESS_SIZE));
+                    } else if (grid[i][j].getPiece().getName().equals("Rat")) {
+                        gridComponents[i][j].add(new RatChessComponent(chessPiece.getOwner(), CHESS_SIZE));
+                    } else if (grid[i][j].getPiece().getName().equals("Rat")) {
+                        gridComponents[i][j].add(new WolfChessComponent(chessPiece.getOwner(), CHESS_SIZE));
+                    } else if (grid[i][j].getPiece().getName().equals("Leopard")) {
+                        gridComponents[i][j].add(new LeopardChessComponent(chessPiece.getOwner(), CHESS_SIZE));
+                    } else if (grid[i][j].getPiece().getName().equals("Dog")) {
+                        gridComponents[i][j].add(new DogChessComponent(chessPiece.getOwner(), CHESS_SIZE));
+                    }
+
                 }
             }
         }

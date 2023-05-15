@@ -43,7 +43,6 @@ public class Chessboard {
         grid[7][1].setPiece(new ChessPiece(PlayerColor.BLUE, "Cat", 2));
         grid[2][0].setPiece(new ChessPiece(PlayerColor.RED, "Rat", 1));
         grid[6][6].setPiece(new ChessPiece(PlayerColor.BLUE, "Rat", 1));
-
     }
 
     private ChessPiece getChessPieceAt(ChessboardPoint point) {
