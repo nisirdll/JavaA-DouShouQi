@@ -1,6 +1,8 @@
 import controller.GameController;
 import model.Chessboard;
 import view.ChessGameFrame;
+import view.Register;
+import view.SignInFrame;
 
 import javax.swing.*;
 
@@ -11,5 +13,7 @@ public class Main {
             GameController gameController = new GameController(mainFrame.getChessboardComponent(), new Chessboard());
             mainFrame.setVisible(true);
         });
+        SignInFrame login = new SignInFrame();
+        Register register = new Register();
     }
 }
