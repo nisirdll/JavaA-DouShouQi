@@ -8,13 +8,16 @@ public class ChessPiece {
     // Elephant? Cat? Dog? ...
     private String name;
     private int rank;
+    private CellType type;
 
-    public ChessPiece(PlayerColor owner, String name, int rank) {
+
+    public ChessPiece(PlayerColor owner, String name, int rank,CellType type) {
         this.owner = owner;
         this.name = name;
         this.rank = rank;
+        this.type = type;
     }
-
+    public CellType getType(){return type;}
     public boolean canCapture(ChessPiece target) {
         // TODO: Finish this method!
         if (this.rank>=target.rank){
@@ -32,5 +35,8 @@ public class ChessPiece {
 
     public PlayerColor getOwner() {
         return owner;
+    }
+    public  void setRank(int rank1){
+
     }
 }

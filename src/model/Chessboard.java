@@ -149,6 +149,13 @@ public class Chessboard {
         if (Math.abs(srcRow - destRow) + Math.abs(srcCol - destCol) != 1) {
             return false;
         }
+        if (destPiece.getType()==CellType.Dens){
+            if (destPiece.getOwner()==srcPiece.getOwner()){
+                return false;
+            }else {
+                destPiece.setRank(0);
+            }
+        }
         return true;
     }
 
