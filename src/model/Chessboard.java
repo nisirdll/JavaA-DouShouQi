@@ -1,6 +1,9 @@
 package model;
-import java.util.Set;
+
+import controller.ChessTimer;
+
 import java.util.HashSet;
+import java.util.Set;
 /**
  * This class store the real chess information.
  * The Chessboard has 9*7 cells, and each cell has a position for chess
@@ -194,5 +197,20 @@ public class Chessboard {
             return false;
 
     }
+        private ChessTimer timer;
+
+        public void ChessBoard() {
+            timer = new ChessTimer();
+        }
+
+        public void startGame() {
+            timer.start();
+            while (true) {
+                // game logic here
+                // switch player when necessary
+                timer.switchPlayer();
+            }
+        }
+
 }
 
