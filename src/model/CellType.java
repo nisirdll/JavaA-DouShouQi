@@ -1,4 +1,4 @@
 package model;
 
-public enum CellType {Dens,Trap
+public enum CellType {Dens,Trap,Piece
 }

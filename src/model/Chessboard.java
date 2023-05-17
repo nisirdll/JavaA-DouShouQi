@@ -30,22 +30,22 @@ public class Chessboard {
     }
 
     private void initPieces() {
-        grid[2][6].setPiece(new ChessPiece(PlayerColor.RED, "Elephant", 8));
-        grid[6][0].setPiece(new ChessPiece(PlayerColor.BLUE, "Elephant", 8));
-        grid[0][0].setPiece(new ChessPiece(PlayerColor.RED, "Lion", 7));
-        grid[8][6].setPiece(new ChessPiece(PlayerColor.BLUE, "Lion", 7));
-        grid[0][6].setPiece(new ChessPiece(PlayerColor.RED, "Tiger", 6));
-        grid[8][0].setPiece(new ChessPiece(PlayerColor.BLUE, "Tiger", 6));
-        grid[2][2].setPiece(new ChessPiece(PlayerColor.RED, "Leopard", 5));
-        grid[6][4].setPiece(new ChessPiece(PlayerColor.BLUE, "Leopard", 5));
-        grid[2][4].setPiece(new ChessPiece(PlayerColor.RED, "Wolf", 4));
-        grid[6][2].setPiece(new ChessPiece(PlayerColor.BLUE, "Wolf", 4));
-        grid[1][1].setPiece(new ChessPiece(PlayerColor.RED, "Dog", 3));
-        grid[7][5].setPiece(new ChessPiece(PlayerColor.BLUE, "Dog", 3));
-        grid[1][5].setPiece(new ChessPiece(PlayerColor.RED, "Cat", 2));
-        grid[7][1].setPiece(new ChessPiece(PlayerColor.BLUE, "Cat", 2));
-        grid[2][0].setPiece(new ChessPiece(PlayerColor.RED, "Rat", 1));
-        grid[6][6].setPiece(new ChessPiece(PlayerColor.BLUE, "Rat", 1));
+        grid[2][6].setPiece(new ChessPiece(PlayerColor.RED, "Elephant", 8,CellType.Piece));
+        grid[6][0].setPiece(new ChessPiece(PlayerColor.BLUE, "Elephant", 8,CellType.Piece));
+        grid[0][0].setPiece(new ChessPiece(PlayerColor.RED, "Lion", 7,CellType.Piece));
+        grid[8][6].setPiece(new ChessPiece(PlayerColor.BLUE, "Lion", 7,CellType.Piece));
+        grid[0][6].setPiece(new ChessPiece(PlayerColor.RED, "Tiger", 6,CellType.Piece));
+        grid[8][0].setPiece(new ChessPiece(PlayerColor.BLUE, "Tiger", 6,CellType.Piece));
+        grid[2][2].setPiece(new ChessPiece(PlayerColor.RED, "Leopard", 5,CellType.Piece));
+        grid[6][4].setPiece(new ChessPiece(PlayerColor.BLUE, "Leopard", 5,CellType.Piece));
+        grid[2][4].setPiece(new ChessPiece(PlayerColor.RED, "Wolf", 4,CellType.Piece));
+        grid[6][2].setPiece(new ChessPiece(PlayerColor.BLUE, "Wolf", 4,CellType.Piece));
+        grid[1][1].setPiece(new ChessPiece(PlayerColor.RED, "Dog", 3,CellType.Piece));
+        grid[7][5].setPiece(new ChessPiece(PlayerColor.BLUE, "Dog", 3,CellType.Piece));
+        grid[1][5].setPiece(new ChessPiece(PlayerColor.RED, "Cat", 2,CellType.Piece));
+        grid[7][1].setPiece(new ChessPiece(PlayerColor.BLUE, "Cat", 2,CellType.Piece));
+        grid[2][0].setPiece(new ChessPiece(PlayerColor.RED, "Rat", 1,CellType.Piece));
+        grid[6][6].setPiece(new ChessPiece(PlayerColor.BLUE, "Rat", 1,CellType.Piece));
     }
 
     private ChessPiece getChessPieceAt(ChessboardPoint point) {
@@ -139,25 +139,29 @@ public class Chessboard {
         if (srcPiece == null || destPiece != null) {
             return false;
         }
-
-        int srcRow = src.getRow();
-        int srcCol = src.getCol();
-        int destRow = dest.getRow();
-        int destCol = dest.getCol();
-
         // Check if the source and destination are adjacent horizontally or vertically
-        if (Math.abs(srcRow - destRow) + Math.abs(srcCol - destCol) != 1) {
+        if (calculateDistance(src, dest) != 1) {
             return false;
         }
-        if (destPiece.getType()==CellType.Dens){
-            if (destPiece.getOwner()==srcPiece.getOwner()){
+        CellType destCellType = getChessPieceAt(dest).getType();
+        if (destCellType == CellType.Dens) {
+            if (srcPiece.getOwner() == destPiece.getOwner()) {
+                // It is not allowed that the piece enters its own den.
                 return false;
-            }else {
-                destPiece.setRank(0);
+            } else {
+                // The player wins if their piece enters the opponent's den
+                return true;
             }
+        } else if (destCellType == CellType.Trap) {
+            // If a piece enters the opponent's trap, its rank is reduced to 0 temporarily before exiting
+            if (srcPiece.getOwner() != destPiece.getOwner()) {
+                srcPiece.setRank(0);
+            }
+            // Add the necessary logic here to handle the trapped piece
         }
         return true;
     }
+
 
 
     public boolean isValidCapture(ChessboardPoint src, ChessboardPoint dest) {
