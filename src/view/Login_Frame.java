@@ -2,6 +2,7 @@ package view;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -62,11 +63,11 @@ public class Login_Frame extends JFrame{
         jPanel.setOpaque(true);
         jPanel.setLayout(new SimpleLayout());
 
-        MatterBorder matterBorder = new MatterBorder(0, 0, 0, 1,Color.gray);
-        userfield.setBorder((Border) matterBorder);
+        MatteBorder matteBorder = new MatteBorder(0, 0, 0, 1,Color.gray);
+        userfield.setBorder(matteBorder);
         jPanel.add(userfield);
         jPanel.add(users);
-        codefield.setBorder((Border) matterBorder);
+        codefield.setBorder((Border) matteBorder);
         jPanel.add(codefield);
         Border border = BorderFactory.createEmptyBorder(1,1,1,1);
         close.setFocusPainted(false);
@@ -89,19 +90,20 @@ public class Login_Frame extends JFrame{
         jPanel.add(login);
         login.addActionListener((e)->{
             String names = userfield.getText();
+            @SuppressWarnings("deprecation")
             String codes = codefield.getText();
             users []yonghu = new users[5];
             for(int i = 0;i<5;i++){
                 yonghu[i] = new users();
             }
-            yonghu[0].users="test1";
+            yonghu[0].users="123";
             yonghu[1].users="test2";
             yonghu[2].users="test3";
             yonghu[3].users="test4";
             yonghu[4].users="test5";
             int count = 0;
             for(int i = 0;i<5;i++){
-                if(names.equals(yonghu[i].users.equals(names)&&mima.euqals("123"))){
+                if(names.equals(yonghu[i].users)&&codes.equals(yonghu[i].codes)){
                     count++;
                 }
             }
@@ -118,5 +120,65 @@ public class Login_Frame extends JFrame{
 
 
     }
+    public class SimpleLayout extends Layout{
+
+        @Override
+        public void layoutContainer(Container parent){
+            Rectangle rect = parent.getBounds();
+            if(bg.isVisible()){
+                Dimension size = bg.getPreferredSize();
+                bg.setBounds(0, 0, rect.width, rect.height);
+            }
+            if(users.isVisible()){
+                Dimension size = users.getPreferredSize();
+                int x = rect.width* 1/5 + 15;
+                int y = rect.height* 1/5 + 15;
+                users.setBounds(x, y, size.width, size.height);
+            }
+            if(codes.isVisible()){
+                Dimension size = codes.getPreferredSize();
+                int x = rect.width* 1/5 + 15;
+                int y = rect.height* 1/2 + 42;
+                codes.setBounds(x, y, size.width, size.height);
+            }
+            if(userfield.isVisible()){
+                Dimension size = userfield.getPreferredSize();
+                int x = rect.width* 1/5 + 30;
+                int y = rect.height* 1/2 + 1;
+                userfield.setBounds(x, y, 215, 20);
+            }
+            if(codefield.isVisible()){
+                Dimension size = codefield.getPreferredSize();
+                int x = rect.width*1/5 + 30;
+                int y = rect.height*1/2 + 39;
+                codefield.setBounds(x, y, 215, 20);
+            }
+            if(tx.isVisible()){
+                Dimension size = tx.getPreferredSize();
+                int x = (rect.width - size.width)/3 +5;
+                int y = 44;
+                tx.setBounds(x, y, size.width, size.height);
+            }
+            if(zh.isVisible()){
+                Dimension size = zh.getPreferredSize();
+                int x = (rect.width - size.width)/3 + 85;
+                int y = 42;
+                zh.setBounds(x, y, size.width, size.height);
+            }
+            if(login.isVisible()){
+                Dimension size = login.getPreferredSize();
+                int x = (rect.width - size.width)/2 + 12;
+                int y = rect.height*1/2 + 89;
+                login.setBounds(x, y, size.width, size.height);
+            }
+            if(close.isVisible()){
+                Dimension size = close.getPreferredSize();
+                int x = rect.width - size.width ;
+                int y = 0;
+                close.setBounds(x, y, size.width, size.height);
+            }
+        }
+    }
+
 
 }

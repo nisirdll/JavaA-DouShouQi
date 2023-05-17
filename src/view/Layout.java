@@ -2,7 +2,7 @@ package view;
 
 import java.awt.*;
 
-public abstract class simpleLayout implements LayoutManager{
+public abstract class Layout implements LayoutManager{
     @Override
     public void addLayoutComponent(String name, Component comp) {
     }
