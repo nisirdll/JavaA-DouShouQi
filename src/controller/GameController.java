@@ -2,13 +2,12 @@ package controller;
 
 
 import listener.GameListener;
-import model.Chessboard;
-import model.ChessboardPoint;
-import model.Constant;
-import model.PlayerColor;
+import model.*;
 import view.CellComponent;
 import view.ChessboardComponent;
 import view.ElephantChessComponent;
+
+import static model.Constant.CHESSBOARD_ROW_SIZE;
 
 /**
  * Controller is the connection between model and view,
@@ -50,7 +49,7 @@ public class GameController implements GameListener {
     private void initialize() {
         //这是一个初始化的private 函数
         //
-        for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
+        for (int i = 0; i < CHESSBOARD_ROW_SIZE.getNum(); i++) {
             for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
 
 
@@ -60,20 +59,58 @@ public class GameController implements GameListener {
 
     // after a valid move swap the player
     private void swapColor() {
-
-
         currentPlayer = currentPlayer == PlayerColor.BLUE ? PlayerColor.RED : PlayerColor.BLUE;
-        //
+        //use this method to change the player's color,since the player is changed
     }
 
-    private boolean win() {
-        // TODO: Check the board if there is a winner
-        //check whether the game is over
-        //if the game is over, return true
-        //else
+    private boolean win(PlayerColor currentPlayer) {
+        // Check the board if there is a winner
 
+        // Check if the current player's pieces have entered the opponent's den
+        if (currentPlayer == PlayerColor.RED) {
+                // Check if all pieces of the player are captured
+                if (model.areAllPiecesCaptured(currentPlayer)) {
+                    return true;
+                }
+
+                // Check if the player is stuck and unable to make any moves
+                if (model.isPlayerStuck(currentPlayer)) {
+                    return true;
+                }
+
+                // Check if the opponent's dens is occupied by the player
+                if (model.isDensOccupied(PlayerColor.BLUE)) {
+                    return true;
+                }
+
+                // The player has not won yet
+                return false;
+
+
+        } else if (currentPlayer == PlayerColor.BLUE) {
+            // Check if all pieces of the player are captured
+            if (model.areAllPiecesCaptured(currentPlayer)) {
+                return true;
+            }
+
+            // Check if the player is stuck and unable to make any moves
+            if (model.isPlayerStuck(currentPlayer)) {
+                return true;
+            }
+
+            // Check if the opponent's dens is occupied by the player
+            if (model.isDensOccupied(PlayerColor.RED)) {
+                return true;
+            }
+
+            // The player has not won yet
+            return false;
+        }
+
+        // No winner found
         return false;
     }
+
 
 
     // click an empty cell
