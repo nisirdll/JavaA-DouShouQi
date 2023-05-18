@@ -11,12 +11,11 @@ import java.util.Set;
 public class Chessboard {
     private Cell[][] grid;
     private final Set<ChessboardPoint> riverCell = new HashSet<>();
-
+    private ChessNotation notation;
 
     public Chessboard() {
-        this.grid =
-                new Cell[Constant.CHESSBOARD_ROW_SIZE.getNum()][Constant.CHESSBOARD_COL_SIZE.getNum()];//19X19
-
+        this.grid = new Cell[Constant.CHESSBOARD_ROW_SIZE.getNum()][Constant.CHESSBOARD_COL_SIZE.getNum()];//19X19
+        this.notation = new ChessNotation();
         initGrid();
         initPieces();
     }
@@ -29,30 +28,32 @@ public class Chessboard {
         }
     }
 
-    private void initPieces() {
-        grid[2][6].setPiece(new ChessPiece(PlayerColor.RED, "Elephant", 8,CellType.Piece));
-        grid[6][0].setPiece(new ChessPiece(PlayerColor.BLUE, "Elephant", 8,CellType.Piece));
-        grid[0][0].setPiece(new ChessPiece(PlayerColor.RED, "Lion", 7,CellType.Piece));
-        grid[8][6].setPiece(new ChessPiece(PlayerColor.BLUE, "Lion", 7,CellType.Piece));
-        grid[0][6].setPiece(new ChessPiece(PlayerColor.RED, "Tiger", 6,CellType.Piece));
-        grid[8][0].setPiece(new ChessPiece(PlayerColor.BLUE, "Tiger", 6,CellType.Piece));
-        grid[2][2].setPiece(new ChessPiece(PlayerColor.RED, "Leopard", 5,CellType.Piece));
-        grid[6][4].setPiece(new ChessPiece(PlayerColor.BLUE, "Leopard", 5,CellType.Piece));
-        grid[2][4].setPiece(new ChessPiece(PlayerColor.RED, "Wolf", 4,CellType.Piece));
-        grid[6][2].setPiece(new ChessPiece(PlayerColor.BLUE, "Wolf", 4,CellType.Piece));
-        grid[1][1].setPiece(new ChessPiece(PlayerColor.RED, "Dog", 3,CellType.Piece));
-        grid[7][5].setPiece(new ChessPiece(PlayerColor.BLUE, "Dog", 3,CellType.Piece));
-        grid[1][5].setPiece(new ChessPiece(PlayerColor.RED, "Cat", 2,CellType.Piece));
-        grid[7][1].setPiece(new ChessPiece(PlayerColor.BLUE, "Cat", 2,CellType.Piece));
-        grid[2][0].setPiece(new ChessPiece(PlayerColor.RED, "Rat", 1,CellType.Piece));
-        grid[6][6].setPiece(new ChessPiece(PlayerColor.BLUE, "Rat", 1,CellType.Piece));
+    public void initPieces() {
+        grid[2][6].setPiece(new ChessPiece(PlayerColor.RED, "Elephant", 8,CellType.Piece,"/img/animals/elephant.png"));
+        grid[6][0].setPiece(new ChessPiece(PlayerColor.BLUE, "Elephant", 8,CellType.Piece,"/img/animals/elephant.png"));
+        grid[0][0].setPiece(new ChessPiece(PlayerColor.RED, "Lion", 7,CellType.Piece,"/img/animals/lion.png"));
+        grid[8][6].setPiece(new ChessPiece(PlayerColor.BLUE, "Lion", 7,CellType.Piece,"/img/animals/lion.png"));
+        grid[0][6].setPiece(new ChessPiece(PlayerColor.RED, "Tiger", 6,CellType.Piece,"/img/animals/tiger.png"));
+        grid[8][0].setPiece(new ChessPiece(PlayerColor.BLUE, "Tiger", 6,CellType.Piece,"/img/animals/tiger.png"));
+        grid[2][2].setPiece(new ChessPiece(PlayerColor.RED, "Leopard", 5,CellType.Piece,"/img/animals/leopard.png"));
+        grid[6][4].setPiece(new ChessPiece(PlayerColor.BLUE, "Leopard", 5,CellType.Piece,"/img/animals/leopard.png"));
+        grid[2][4].setPiece(new ChessPiece(PlayerColor.RED, "Wolf", 4,CellType.Piece,"/img/animals/wolf.png"));
+        grid[6][2].setPiece(new ChessPiece(PlayerColor.BLUE, "Wolf", 4,CellType.Piece,"/img/animals/wolf.png"));
+        grid[1][1].setPiece(new ChessPiece(PlayerColor.RED, "Dog", 3,CellType.Piece,"/img/animals/dog.png"));
+        grid[7][5].setPiece(new ChessPiece(PlayerColor.BLUE, "Dog", 3,CellType.Piece,"/img/animals/dog.png"));
+        grid[1][5].setPiece(new ChessPiece(PlayerColor.RED, "Cat", 2,CellType.Piece,"/img/animals/cat.png"));
+        grid[7][1].setPiece(new ChessPiece(PlayerColor.BLUE, "Cat", 2,CellType.Piece,"/img/animals/cat.png"));
+        grid[2][0].setPiece(new ChessPiece(PlayerColor.RED, "Rat", 1,CellType.Piece,"/img/animals/rat.png"));
+        grid[6][6].setPiece(new ChessPiece(PlayerColor.BLUE, "Rat", 1,CellType.Piece,"/img/animals/rat.png"));
     }
 
-    private ChessPiece getChessPieceAt(ChessboardPoint point) {
+    public ChessPiece getChessPieceAt(ChessboardPoint point) {
         return getGridAt(point).getPiece();
     }
 
-    private Cell getGridAt(ChessboardPoint point) {
+
+
+    public Cell getGridAt(ChessboardPoint point) {
         return grid[point.getRow()][point.getCol()];
     }
 
@@ -71,18 +72,25 @@ public class Chessboard {
     }
 
     public void moveChessPiece(ChessboardPoint src, ChessboardPoint dest) {
-        if (!isValidMove(src, dest)) {
+        if (!(isValidMove(src, dest)||isValidJumpSquare(src,dest))) {
             throw new IllegalArgumentException("Illegal chess move!");
         }
         setChessPiece(dest, removeChessPiece(src));
+        String move = getChessPieceAt(dest).getName() + " " + src.toString() + " to " + dest.toString();
+        notation.addMove(move);
     }
 
     public void captureChessPiece(ChessboardPoint src, ChessboardPoint dest) {
-        if (isValidCapture(src, dest)||isValidJumpSquare(src,dest)) {
+        if (!isValidCapture(src, dest)) {
             throw new IllegalArgumentException("Illegal chess capture!");
         }
         // TODO: Finish the method.
         setChessPiece(dest,removeChessPiece(src));
+        String move = getChessPieceAt(dest).getName() + " " + src.toString() + " captures " + getChessPieceAt(dest).getName() + " at " + dest.toString();
+        notation.addMove(move);
+    }
+    public void printChessNotation() {
+        notation.printNotation();
     }
 
     public Cell[][] getGrid() {
@@ -136,7 +144,7 @@ public class Chessboard {
         ChessPiece srcPiece = getChessPieceAt(src);
         ChessPiece destPiece = getChessPieceAt(dest);
 
-        if (srcPiece == null || destPiece != null) {
+        if (srcPiece == null ) {
             return false;
         }
         // Check if the source and destination are adjacent horizontally or vertically
@@ -198,10 +206,11 @@ public class Chessboard {
                 }
             }
                 // Rat cannot capture Elephant on land and cannot be captured on water
-                if (srcPiece.getName().equals("Rat")) {
-                    if (!riverCell.contains("Rat") && !destPiece.getName().equals("Elephant")) {
-                        return true;
-                    }
+                if (srcPiece.getName().equals("Rat")&&riverCell.contains("Rat")&&destPiece.getName().equals("Elephant")) {
+                        return false;
+                }
+                if (destPiece.getName().equals("Rat")&&riverCell.contains("rat")){
+                    return false;
                 }
             }
             return false;
@@ -221,6 +230,66 @@ public class Chessboard {
                 timer.switchPlayer();
             }
         }
+        public boolean isDensOccupied(PlayerColor playerColor){
+            ChessPiece DensPiece = null;
+            // Find the ChessPiece in the dens based on the playerColor
+            if (playerColor==PlayerColor.RED){
+                DensPiece = grid[0][3].getPiece();
+            } else if (playerColor == PlayerColor.BLUE) {
+                DensPiece = grid[8][3].getPiece();
+            }
+            // Check if the dens is occupied by the player's ChessPiece
+            return DensPiece!=null&&DensPiece.getType() == CellType.Dens;
+        }
+    public boolean isPlayerStuck(PlayerColor playerColor) {
+        // Iterate through all cells on the chessboard
+        for (int row = 0; row < Constant.CHESSBOARD_ROW_SIZE.getNum(); row++) {
+            for (int col = 0; col < Constant.CHESSBOARD_COL_SIZE.getNum(); col++) {
+                ChessPiece chessPiece = grid[row][col].getPiece();
 
+                // Check if the cell contains a ChessPiece owned by the specified playerColor
+                if (chessPiece != null && chessPiece.getOwner() == playerColor) {
+                    // Check if the ChessPiece can make a valid move or capture
+                    ChessboardPoint src = new ChessboardPoint(row, col);
+                    for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
+                        for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
+                            ChessboardPoint dest = new ChessboardPoint(i, j);
+                            if (isValidMove(src, dest) || isValidCapture(src, dest)) {
+                                // There is at least one valid move or capture, player is not stuck
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // No valid moves or captures found for any of the player's ChessPieces, player is stuck
+        return true;
+    }
+    public boolean areAllPiecesCaptured(PlayerColor playerColor) {
+        // Iterate through all cells on the chessboard
+        for (int row = 0; row < Constant.CHESSBOARD_ROW_SIZE.getNum(); row++) {
+            for (int col = 0; col < Constant.CHESSBOARD_COL_SIZE.getNum(); col++) {
+                ChessPiece chessPiece = grid[row][col].getPiece();
+
+                // Check if the cell contains a ChessPiece owned by the specified playerColor
+                if (chessPiece != null && chessPiece.getOwner() == playerColor) {
+                    // At least one ChessPiece of the player is still on the chessboard
+                    return false;
+                }
+            }
+        }
+
+        // No ChessPiece of the player found on the chessboard
+        return true;
+    }
+    public void restart() {
+        this.initGrid();
+        this.initPieces();
+    }
+    public int getRoundCount() {
+        return notation.getMoves().size();
+    }
 }
 

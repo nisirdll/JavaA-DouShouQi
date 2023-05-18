@@ -1,8 +1,8 @@
 package listener;
 
 import model.ChessboardPoint;
+import view.AnimalChessComponent;
 import view.CellComponent;
-import view.ElephantChessComponent;
 
 public interface GameListener {
 
@@ -10,6 +10,6 @@ public interface GameListener {
 
 
 
-    void onPlayerClickChessPiece(ChessboardPoint point, ElephantChessComponent component);
+    void onPlayerClickChessPiece(ChessboardPoint point, AnimalChessComponent component);
 
 }

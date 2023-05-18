@@ -9,13 +9,15 @@ public class ChessPiece {
     private String name;
     private int rank;
     private CellType type;
+    private String address;
 
 
-    public ChessPiece(PlayerColor owner, String name, int rank,CellType type) {
+    public ChessPiece(PlayerColor owner, String name, int rank,CellType type,String address) {
         this.owner = owner;
         this.name = name;
         this.rank = rank;
         this.type = type;
+        this.address = address;
     }
     public CellType getType(){return type;}
     public boolean canCapture(ChessPiece target) {
@@ -38,6 +40,8 @@ public class ChessPiece {
     }
     public  void setRank(int rank){
         this.rank=rank;
-
+    }
+    public String getAddress() {
+        return address;
     }
 }
