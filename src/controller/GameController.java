@@ -7,6 +7,8 @@ import view.AnimalChessComponent;
 import view.CellComponent;
 import view.ChessboardComponent;
 
+import javax.swing.*;
+
 /**
  * Controller is the connection between model and view,
  * when a Controller receive a request from a view, the Controller
@@ -133,71 +135,74 @@ public class GameController implements GameListener {
     @Override
     public void onPlayerClickCell(ChessboardPoint point, CellComponent component) {
         Chessboard chessboard = new Chessboard();
-        if (selectedPoint != null && model.isValidMove(selectedPoint, point)) {
-            // System.out.println("valid move");
-            //如果这个点是valid move
-            //那么就把这个点的棋子移动到这个点
-            //然后把这个点的棋子的component移动到这个点
-            //然后把selectedPoint设为null
-            //然后swapColor
-            //然后repaint
+        if (selectedPoint != null && (model.isValidMove(selectedPoint, point) || model.getChessPieceAt(point) == null)) {
+            if (!model.isValidMove(selectedPoint, point)) {
+                JOptionPane.showMessageDialog(null, "Invalid Move!", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (selectedPoint != null) {
+                count++;
+                model.moveChessPiece(selectedPoint, point);
+                view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
+                selectedPoint = null;
+                swapColor();
+                view.repaint();
 
-            model.moveChessPiece(selectedPoint, point);
+                ChessPiece pointPiece = model.getChessPieceAt(point);
+                if (pointPiece != null && pointPiece.getName().equals("Trap")
+                        && ((currentPlayer.equals(PlayerColor.BLUE) && point.getRow() < 3)
+                        || (currentPlayer.equals(PlayerColor.RED) && point.getRow() > 6))) {
+                    pointPiece.setRank(0);
+                }
+                if (pointPiece != null && pointPiece.getName().equals("Den")) {
+                    winner = currentPlayer;
+                }
 
-            view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
-            selectedPoint = null;
-            swapColor();
-            view.repaint();
-            // TODO: if the chess enter Dens or Traps and so on
-            ChessPiece pointPiece = model.getChessPieceAt(point);
-            if (pointPiece.getName().equals("Trap")
-                    && ((this.currentPlayer.equals(PlayerColor.BLUE) && point.getRow() < 3)
-                    || (this.currentPlayer.equals(PlayerColor.RED) && point.getRow() > 6))) {
-                this.model.getChessPieceAt(point).setRank(0);
+                chessboard.printChessNotation();
+                int roundCount = chessboard.getRoundCount();
+                System.out.println("Round count: " + roundCount);
             }
-            if (pointPiece.getName().equals("Den")) {
-                winner = currentPlayer;
-            }
-
-            chessboard.printChessNotation();
-            int roundCount = chessboard.getRoundCount();
-            System.out.println("Round count: " + roundCount);
         }
     }
 
     // click a cell with a chess
     @Override
     public void onPlayerClickChessPiece(ChessboardPoint point, AnimalChessComponent component) {
-
         if (selectedPoint == null) {
             if (model.getChessPieceOwner(point).equals(currentPlayer)) {
                 selectedPoint = point;
                 component.setSelected(true);
                 component.revalidate();
                 component.repaint();
+                view.repaint();
+                view.revalidate();
             }
-            //如果这个点是空的
-            //那么就把这个点设为selectedPoint
-            //然后把这个点的棋子的component设为selected
-            //然后repaint
-            //然后return
-
         } else if (selectedPoint.equals(point)) {
             selectedPoint = null;
             component.setSelected(false);
             component.repaint();
-            //如果这个点是selectedPoint
-            //那么就把selectedPoint设为null
-            //然后把这个点的棋子的component设为unselected
-            //然后repaint
-            //然后return
+            view.repaint();
+            view.revalidate();
+        } else if (model.getChessPieceAt(point) != null) {
+            if (model.isValidCapture(selectedPoint, point)) {
+                AnimalChessComponent chessComponent = (AnimalChessComponent) view.getGridComponentAt(point).getComponents()[0];
+                count++;
+                model.captureChessPiece(selectedPoint, point);
+                view.removeChessComponentAtGrid(point);
+                view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
+                selectedPoint = null;
 
+                swapColor();
+                view.repaint();
+
+                ChessPiece pointPiece = model.getChessPieceAt(point);
+                if (pointPiece != null && pointPiece.getName().equals("Trap") && ((currentPlayer.equals(PlayerColor.BLUE) && point.getRow() < 3)
+                        || (currentPlayer.equals(PlayerColor.RED) && point.getRow() > 6))) {
+                    pointPiece.setRank(0);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Invalid Move!", "Error", JOptionPane.ERROR_MESSAGE);
         }
-        // TODO: Implement capture function
-        if (model.isValidCapture(selectedPoint,point)){
-
-        }
-
-
     }
+
+
 }

@@ -48,13 +48,19 @@ public class Chessboard {
     }
 
     public ChessPiece getChessPieceAt(ChessboardPoint point) {
-        return getGridAt(point).getPiece();
+        if (point != null) {
+            return getGridAt(point).getPiece();
+        }
+        return null;
     }
 
 
 
     public Cell getGridAt(ChessboardPoint point) {
-        return grid[point.getRow()][point.getCol()];
+        if (point!=null) {
+            return grid[point.getRow()][point.getCol()];
+        }
+        return null;
     }
 
     private int calculateDistance(ChessboardPoint src, ChessboardPoint dest) {
@@ -144,7 +150,7 @@ public class Chessboard {
         ChessPiece srcPiece = getChessPieceAt(src);
         ChessPiece destPiece = getChessPieceAt(dest);
 
-        if (srcPiece == null ) {
+        if (srcPiece == null||destPiece == null ) {
             return false;
         }
         // Check if the source and destination are adjacent horizontally or vertically
