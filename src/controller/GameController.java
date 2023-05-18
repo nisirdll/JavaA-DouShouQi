@@ -3,11 +3,9 @@ package controller;
 
 import listener.GameListener;
 import model.*;
+import view.AnimalChessComponent;
 import view.CellComponent;
 import view.ChessboardComponent;
-import view.ElephantChessComponent;
-
-import static model.Constant.CHESSBOARD_ROW_SIZE;
 
 /**
  * Controller is the connection between model and view,
@@ -19,7 +17,7 @@ import static model.Constant.CHESSBOARD_ROW_SIZE;
 public class GameController implements GameListener {
 
 
-
+    private PlayerColor winner = null;
     private Chessboard model;
     private ChessboardComponent view;
     private PlayerColor currentPlayer;
@@ -41,7 +39,6 @@ public class GameController implements GameListener {
         // Initialize the chessboard
         initialize();
         view.initiateChessComponent(model);
-
         view.repaint();
 
     }
@@ -49,12 +46,11 @@ public class GameController implements GameListener {
     private void initialize() {
         //这是一个初始化的private 函数
         //
-        for (int i = 0; i < CHESSBOARD_ROW_SIZE.getNum(); i++) {
-            for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
-
-
-            }
-        }
+//        for (int i = 0; i < CHESSBOARD_ROW_SIZE.getNum(); i++) {
+//            for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
+//            }
+//        }
+        model.initPieces();
     }
 
     // after a valid move swap the player
@@ -62,6 +58,7 @@ public class GameController implements GameListener {
         currentPlayer = currentPlayer == PlayerColor.BLUE ? PlayerColor.RED : PlayerColor.BLUE;
         //use this method to change the player's color,since the player is changed
     }
+
 
     private boolean win(PlayerColor currentPlayer) {
         // Check the board if there is a winner
@@ -110,7 +107,13 @@ public class GameController implements GameListener {
         // No winner found
         return false;
     }
-
+    public void restart() {
+        model.restart();
+        view.initiateChessComponent(model);
+        view.repaint();
+        this.currentPlayer = PlayerColor.BLUE;
+        this.selectedPoint = null;
+    }
 
 
     // click an empty cell
@@ -118,7 +121,7 @@ public class GameController implements GameListener {
     public void onPlayerClickCell(ChessboardPoint point, CellComponent component) {
 
         if (selectedPoint != null && model.isValidMove(selectedPoint, point)) {
-           // System.out.println("valid move");
+            // System.out.println("valid move");
             //如果这个点是valid move
             //那么就把这个点的棋子移动到这个点
             //然后把这个点的棋子的component移动到这个点
@@ -133,18 +136,27 @@ public class GameController implements GameListener {
             swapColor();
             view.repaint();
             // TODO: if the chess enter Dens or Traps and so on
-
+            ChessPiece pointPiece = model.getChessPieceAt(point);
+            if (pointPiece.getName().equals("Trap")
+                    && ((this.currentPlayer.equals(PlayerColor.BLUE) && point.getRow() < 3)
+                    || (this.currentPlayer.equals(PlayerColor.RED) && point.getRow() > 6))) {
+                this.model.getChessPieceAt(point).setRank(0);
+            }
+            if (pointPiece.getName().equals("Den")) {
+                winner = currentPlayer;
+            }
         }
     }
 
     // click a cell with a chess
     @Override
-    public void onPlayerClickChessPiece(ChessboardPoint point, ElephantChessComponent component) {
+    public void onPlayerClickChessPiece(ChessboardPoint point, AnimalChessComponent component) {
 
         if (selectedPoint == null) {
             if (model.getChessPieceOwner(point).equals(currentPlayer)) {
                 selectedPoint = point;
                 component.setSelected(true);
+                component.revalidate();
                 component.repaint();
             }
             //如果这个点是空的
@@ -165,6 +177,9 @@ public class GameController implements GameListener {
 
         }
         // TODO: Implement capture function
+        if (model.isValidCapture(selectedPoint,point)){
+
+        }
 
 
     }
