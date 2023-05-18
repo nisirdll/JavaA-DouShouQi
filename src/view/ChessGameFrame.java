@@ -2,6 +2,8 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * 这个类表示游戏过程中的整个游戏界面，是一切的载体
@@ -98,20 +100,30 @@ public class ChessGameFrame extends JFrame {
 //            new SignInFrame();
         });
     }
+    JLabel timerLabel = new JLabel("00:00");
 
-//    private void addLoadButton() {
-//        JButton button = new JButton("Load");
-//        button.setLocation(HEIGHT, HEIGHT / 10 + 240);
-//        button.setSize(200, 60);
-//        button.setFont(new Font("Rockwell", Font.BOLD, 20));
-//        add(button);
-//
-//        button.addActionListener(e -> {
-//            System.out.println("Click load");
-//            String path = JOptionPane.showInputDialog(this,"Input Path here");
-//            GameController.loadGameFromFile(path);
-//        });
-//    }
+    Timer timer = new Timer(1000, new ActionListener() {
+        int minutes = 10;
+        int seconds = 30;
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            seconds--;
+            if (seconds == 0) {
+                minutes--;
+                seconds = 59;
+            }
+            if (minutes == 0 && seconds == 0) {
+                timer.stop();
+            }
+            timerLabel.setText(String.format("%02d:%02d", minutes, seconds));
+
+        }
+    });
+
+    public void startTimer() {
+        timer.start();
+    }
+//    add(timerLabel, BorderLayout.NORTH);
 
 
 }
