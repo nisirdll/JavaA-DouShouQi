@@ -11,6 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.HashSet;
+
 import java.util.Set;
 
 import static model.Constant.CHESSBOARD_COL_SIZE;
