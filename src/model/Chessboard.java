@@ -280,9 +280,5 @@ public class Chessboard {
         this.initGrid();
         this.initPieces();
     }
-
-
-
-
 }
 

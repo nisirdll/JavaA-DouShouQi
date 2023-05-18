@@ -21,6 +21,19 @@ public class GameController implements GameListener {
     private Chessboard model;
     private ChessboardComponent view;
     private PlayerColor currentPlayer;
+    private int count = 1;
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public PlayerColor getCurrentPlayer() {
+        return currentPlayer;
+    }
 
     // Record whether there is a selected piece before
     private ChessboardPoint selectedPoint;

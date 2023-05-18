@@ -10,6 +10,8 @@ import java.awt.*;
 
 public class CellComponent extends JPanel {
     private Color background;
+    public boolean isTrap = false;
+    public boolean isDen = false;
 
     public CellComponent(Color background, Point location, int size) {
         setLayout(new GridLayout(1,1));
