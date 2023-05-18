@@ -51,6 +51,8 @@ public class Chessboard {
         return getGridAt(point).getPiece();
     }
 
+
+
     public Cell getGridAt(ChessboardPoint point) {
         return grid[point.getRow()][point.getCol()];
     }
