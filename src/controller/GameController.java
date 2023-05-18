@@ -132,7 +132,7 @@ public class GameController implements GameListener {
     // click an empty cell
     @Override
     public void onPlayerClickCell(ChessboardPoint point, CellComponent component) {
-
+        Chessboard chessboard = new Chessboard();
         if (selectedPoint != null && model.isValidMove(selectedPoint, point)) {
             // System.out.println("valid move");
             //如果这个点是valid move
@@ -158,6 +158,10 @@ public class GameController implements GameListener {
             if (pointPiece.getName().equals("Den")) {
                 winner = currentPlayer;
             }
+
+            chessboard.printChessNotation();
+            int roundCount = chessboard.getRoundCount();
+            System.out.println("Round count: " + roundCount);
         }
     }
 

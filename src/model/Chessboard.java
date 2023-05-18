@@ -11,12 +11,11 @@ import java.util.Set;
 public class Chessboard {
     private Cell[][] grid;
     private final Set<ChessboardPoint> riverCell = new HashSet<>();
-
+    private ChessNotation notation;
 
     public Chessboard() {
-        this.grid =
-                new Cell[Constant.CHESSBOARD_ROW_SIZE.getNum()][Constant.CHESSBOARD_COL_SIZE.getNum()];//19X19
-
+        this.grid = new Cell[Constant.CHESSBOARD_ROW_SIZE.getNum()][Constant.CHESSBOARD_COL_SIZE.getNum()];//19X19
+        this.notation = new ChessNotation();
         initGrid();
         initPieces();
     }
@@ -75,6 +74,8 @@ public class Chessboard {
             throw new IllegalArgumentException("Illegal chess move!");
         }
         setChessPiece(dest, removeChessPiece(src));
+        String move = getChessPieceAt(dest).getName() + " " + src.toString() + " to " + dest.toString();
+        notation.addMove(move);
     }
 
     public void captureChessPiece(ChessboardPoint src, ChessboardPoint dest) {
@@ -83,6 +84,11 @@ public class Chessboard {
         }
         // TODO: Finish the method.
         setChessPiece(dest,removeChessPiece(src));
+        String move = getChessPieceAt(dest).getName() + " " + src.toString() + " captures " + getChessPieceAt(dest).getName() + " at " + dest.toString();
+        notation.addMove(move);
+    }
+    public void printChessNotation() {
+        notation.printNotation();
     }
 
     public Cell[][] getGrid() {
@@ -279,6 +285,9 @@ public class Chessboard {
     public void restart() {
         this.initGrid();
         this.initPieces();
+    }
+    public int getRoundCount() {
+        return notation.getMoves().size();
     }
 }
 
