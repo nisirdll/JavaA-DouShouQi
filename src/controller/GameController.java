@@ -2,10 +2,7 @@ package controller;
 
 
 import listener.GameListener;
-import model.ChessPiece;
-import model.Chessboard;
-import model.ChessboardPoint;
-import model.PlayerColor;
+import model.*;
 import view.AnimalChessComponent;
 import view.CellComponent;
 import view.ChessboardComponent;
@@ -20,7 +17,7 @@ import javax.swing.*;
  *
 */
 public class GameController implements GameListener {
-
+    private final Chessboard chessboard; // 当前棋盘信息
 
     private PlayerColor winner = null;
     private Chessboard model;
@@ -43,12 +40,11 @@ public class GameController implements GameListener {
     // Record whether there is a selected piece before
     private ChessboardPoint selectedPoint;
 
-    public GameController(ChessboardComponent view, Chessboard model) {
+    public GameController(ChessboardComponent view, Chessboard model,Chessboard chessboard) {
         this.view = view;
         this.model = model;
         this.currentPlayer = PlayerColor.BLUE;
-
-
+        this.chessboard = chessboard;
         // Register the controller to the view
         // so that the view can call the controller's method
         // when the view receives the user's request
@@ -166,44 +162,45 @@ public class GameController implements GameListener {
     // click a cell with a chess
     @Override
     public void onPlayerClickChessPiece(ChessboardPoint point, AnimalChessComponent component) {
-        if (selectedPoint == null){
+        if (selectedPoint == null) {
             if (model.getChessPieceOwner(point).equals(currentPlayer)) {
-                selectedPoint = point;
                 component.setSelected(true);
+                selectedPoint = point;
                 component.revalidate();
                 component.repaint();
-                view.repaint();
-                view.revalidate();
+//                view.repaint();
+//                view.revalidate();
             }
-        } else if (selectedPoint.equals(point)) {
-            selectedPoint = null;
-            component.setSelected(false);
-            component.revalidate();
-            component.repaint();
-            view.repaint();
-            view.revalidate();
-        } else if (model.getChessPieceAt(point) != null) {
-            if (model.isValidCapture(selectedPoint, point)) {
-                AnimalChessComponent chessComponent = (AnimalChessComponent) view.getGridComponentAt(point).getComponents()[0];
-                count++;
-                model.captureChessPiece(selectedPoint, point);
-                view.removeChessComponentAtGrid(point);
-                view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
+        } else {
+            if (selectedPoint == point) {
+                component.setSelected(false);
                 selectedPoint = null;
+                component.revalidate();
+                component.repaint();
+//            view.repaint();
+//            view.revalidate();
+            } else if (model.getChessPieceAt(point) != null && !(selectedPoint == point)) {
+                if (model.isValidCapture(selectedPoint, point)) {
+                    AnimalChessComponent chessComponent = (AnimalChessComponent) view.getGridComponentAt(point).getComponents()[0];
+                    count++;
+                    model.captureChessPiece(selectedPoint, point);
+                    view.removeChessComponentAtGrid(point);
+                    view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
+                    selectedPoint = null;
 
-                swapColor();
-                view.repaint();
+                    swapColor();
+                    view.repaint();
 
-                ChessPiece pointPiece = model.getChessPieceAt(point);
-                if (pointPiece != null && pointPiece.getName().equals("Trap") && ((currentPlayer.equals(PlayerColor.BLUE) && point.getRow() < 3)
-                        || (currentPlayer.equals(PlayerColor.RED) && point.getRow() > 6))) {
-                    pointPiece.setRank(0);
+                    ChessPiece pointPiece = model.getChessPieceAt(point);
+                    if (pointPiece != null && pointPiece.getName().equals("Trap") && ((currentPlayer.equals(PlayerColor.BLUE) && point.getRow() < 3)
+                            || (currentPlayer.equals(PlayerColor.RED) && point.getRow() > 6))) {
+                        pointPiece.setRank(0);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Invalid Capture!", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-            }else {
-                JOptionPane.showMessageDialog(null, "Invalid Capture!", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
+
     }
-
-
 }

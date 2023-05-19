@@ -173,7 +173,7 @@ public class Chessboard {
             }
             // Add the necessary logic here to handle the trapped piece
         }
-        return true;
+        return calculateDistance(src,dest) == 1;
     }
 
 
@@ -209,19 +209,17 @@ public class Chessboard {
             if (srcPiece.getName().equals("Tiger") || srcPiece.getName().equals("Lion")) {
                 if (isValidJumpSquare(src, dest) && !riverCell.contains("Rat")) {
                     return true;
-                }else {
-                    return true;
                 }
             }
-                // Rat cannot capture Elephant on land and cannot be captured on water
-                if (srcPiece.getName().equals("Rat")&&riverCell.contains("Rat")&&destPiece.getName().equals("Elephant")) {
-                        return false;
-                }
-                if (destPiece.getName().equals("Rat")&&riverCell.contains("rat")){
-                    return false;
-                }
+            // Rat cannot capture Elephant on land and cannot be captured on water
+            if (srcPiece.getName().equals("Rat")&&riverCell.contains("Rat")&&destPiece.getName().equals("Elephant")) {
+                return false;
             }
-            return false;
+            if (destPiece.getName().equals("Rat")&&riverCell.contains("rat")){
+                return false;
+            }
+        }
+        return false;
 
     }
         private ChessTimer timer;
