@@ -95,9 +95,7 @@ public class Chessboard {
         String move = getChessPieceAt(dest).getName() + " " + src.toString() + " captures " + getChessPieceAt(dest).getName() + " at " + dest.toString();
         notation.addMove(move);
     }
-    public void printChessNotation() {
-        notation.printNotation();
-    }
+
 
     public Cell[][] getGrid() {
         return grid;
@@ -209,6 +207,8 @@ public class Chessboard {
             if (srcPiece.getName().equals("Tiger") || srcPiece.getName().equals("Lion")) {
                 if (isValidJumpSquare(src, dest) && !riverCell.contains("Rat")) {
                     return true;
+                }else {
+                    return true;
                 }
             }
                 // Rat cannot capture Elephant on land and cannot be captured on water
@@ -296,6 +296,9 @@ public class Chessboard {
     }
     public int getRoundCount() {
         return notation.getMoves().size();
+    }
+    public void printChessNotation() {
+        notation.printNotation();
     }
 }
 

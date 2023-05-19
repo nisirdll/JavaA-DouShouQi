@@ -1,9 +1,12 @@
 package view;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * 这个类表示游戏过程中的整个游戏界面，是一切的载体
@@ -42,6 +45,8 @@ public class ChessGameFrame extends JFrame {
         addLabel();  //在游戏面板中添加标签
         addHelloButton();  //在游戏面板中增加一个按钮，如果按下的话就会显示Hello, world!
         addSingInButton();  //按下弹出登录界面
+        playMusic();  //播放音乐
+        addToggleMusicButton();  // 添加停止音乐的按钮
     }
     //
 
@@ -68,7 +73,7 @@ public class ChessGameFrame extends JFrame {
      * 在游戏面板中添加标签
      */
     private void addLabel() {
-        JLabel statusLabel = new JLabel("测试标签");
+        JLabel statusLabel = new JLabel("try");
         statusLabel.setLocation(HEIGHT, HEIGHT / 10);
         statusLabel.setSize(200, 60);
         statusLabel.setFont(new Font("Rockwell", Font.BOLD, 20));
@@ -80,13 +85,74 @@ public class ChessGameFrame extends JFrame {
      */
 
     private void addHelloButton() {
-        JButton button = new JButton("Show Hello Here");
-        button.addActionListener((e) -> JOptionPane.showMessageDialog(this, "Hello, world!"));
+        JButton button = new JButton("Back");
+        button.addActionListener((e) -> {
+            System.out.println("Click Back");
+            new GameUI().setVisible(true);
+            dispose();
+        });
         button.setLocation(HEIGHT, HEIGHT / 10 + 120);
         button.setSize(200, 60);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
     }
+    // 创建返回按钮
+
+
+    // 在ChessGameFrame类中添加以下方法
+    private Clip clip;  // 用于控制音乐播放
+    private boolean isPlaying = true;
+
+    // 播放音乐
+    private void playMusic() {
+        try {
+            // 加载音乐文件
+            ClassLoader classLoader = getClass().getClassLoader();
+            File musicFile = new File(classLoader.getResource("music/october.wav").getFile());
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(musicFile);
+
+            // 创建音频剪辑
+            clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+
+            // 循环播放音乐
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+        } catch (IOException | UnsupportedAudioFileException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // 停止音乐播放
+    private void toggleMusic(){
+        if(clip != null){
+            if(isPlaying){
+                clip.stop();
+
+            }else{
+                clip.start();
+
+            }
+            isPlaying = !isPlaying;
+        }
+    }
+    private void addToggleMusicButton() {
+        JButton button = new JButton("Toggle Music");
+        button.addActionListener((e) -> {
+            toggleMusic();
+        });
+        button.setLocation(WIDTH-220, 10);
+        button.setSize(200, 30);
+        button.setFont(new Font("Rockwell", Font.BOLD, 14));
+        add(button);
+    }
+
+
+
+
+
+
+
+
 
     private void addSingInButton() {
         JButton button = new JButton("Sign In");
