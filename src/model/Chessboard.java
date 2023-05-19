@@ -1,6 +1,7 @@
 package model;
 
 import controller.ChessTimer;
+import view.ChessGameFrame;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -9,6 +10,11 @@ import java.util.Set;
  * The Chessboard has 9*7 cells, and each cell has a position for chess
  */
 public class Chessboard {
+    private static ChessGameFrame chessGameFrame;
+
+    public Chessboard(ChessGameFrame chessGameFrame) {
+        this.chessGameFrame = chessGameFrame;
+    }
     private Cell[][] grid;
     private final Set<ChessboardPoint> riverCell = new HashSet<>();
     private ChessNotation notation;
@@ -82,9 +88,27 @@ public class Chessboard {
             throw new IllegalArgumentException("Illegal chess move!");
         }
         setChessPiece(dest, removeChessPiece(src));
-        String move = getChessPieceAt(dest).getName() + " " + src.toString() + " to " + dest.toString();
-        notation.addMove(move);
-    }
+
+//        setChessPiece(dest, removeChessPiece(src));
+//        String move = getChessPieceAt(dest).getName() + " " + src.toString() + " to " + dest.toString();
+//        notation.addMove(move);
+//        ChessGameFrame.handleMoveChessPiece();
+//        if(chessGameFrame != null){
+//            if(isPlayer1Turn){
+//                chessGame.getTimerPlayer1().stop();
+//                chessGame.getTimerPlayer2().start();
+//            }else {
+//                chessGame.getTimerPlayer2().stop();
+//                chessGame.getTimerPlayer1().start();
+//            }
+//        }
+//
+//        if(chessGameFrame != null){
+//            chessGameFrame.incrementRoundCount();
+//
+//            }
+        }
+
 
     public void captureChessPiece(ChessboardPoint src, ChessboardPoint dest) {
         if (!isValidCapture(src, dest)) {

@@ -1,5 +1,7 @@
 package view;
 
+import model.Chessboard;
+
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
@@ -10,6 +12,12 @@ import java.io.IOException;
 import java.util.Random;
 
 public class ChessGameFrame extends JFrame {
+    private Chessboard chessboard;
+    private JLabel roundCountLabel;
+    private JLabel currentPlayerLabel;
+    private boolean isPlayer1Turn;
+    private int roundCount;
+
 
     private  final int HEIGHT ;
     private  final int WIDTH  ;
@@ -20,7 +28,7 @@ public class ChessGameFrame extends JFrame {
     private Timer timerPlayer2;
     private JLabel timerLabelPlayer1;
     private JLabel timerLabelPlayer2;
-    private boolean isPlayer1Turn;
+
 
     public ChessGameFrame(int width, int height) {
         setTitle("这就是自信队-斗兽棋");
@@ -32,6 +40,7 @@ public class ChessGameFrame extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
         setLayout(null);
+        chessboard = new Chessboard(this);
         timerLabelPlayer1 = createTimerLabel(720, 720);
         add(timerLabelPlayer1);
 
@@ -41,28 +50,42 @@ public class ChessGameFrame extends JFrame {
         timerPlayer1 = createTimer(timerLabelPlayer1);
         timerPlayer2 = createTimer(timerLabelPlayer2);
 
+        roundCountLabel = new JLabel("Round: " + roundCount);
+        roundCountLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        roundCountLabel.setSize(100, 30);
+        roundCountLabel.setLocation(WIDTH / 2 - 50, HEIGHT/20);
+        add(roundCountLabel);
         startGame();
-        addChessboard();
-
         addHelloButton();
-
         playMusic();
         addToggleMusicButton();
-
     }
 
 
 
 
     private void startGame() {
+        addChessboard();
         Random random = new Random();
         isPlayer1Turn = random.nextBoolean();
+        roundCount = 0;
 
         if (isPlayer1Turn) {
             timerPlayer1.start();
         } else {
             timerPlayer2.start();
         }
+        currentPlayerLabel = new JLabel("Current Player: " + (isPlayer1Turn ? "Player 1" : "Player 2"));
+        currentPlayerLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        currentPlayerLabel.setSize(200, 30);
+        currentPlayerLabel.setLocation(WIDTH / 2 - 100, HEIGHT / 20 + 40);
+        add(currentPlayerLabel);
+
+        // 添加行棋的逻辑
+
+
+
+
     }
     public ChessboardComponent getChessboardComponent() {
         return chessboardComponent;
@@ -134,6 +157,25 @@ public class ChessGameFrame extends JFrame {
     }
 
 
+
+    public void increaseRoundCount() {
+        roundCount++;
+        roundCountLabel.setText("Round: " + roundCount);
+        currentPlayerLabel.setText("Current Player: " + (isPlayer1Turn ? "Player 2" : "Player 1"));
+        if (isPlayer1Turn) {
+            timerPlayer2.stop();
+            timerPlayer1.start();
+        } else {
+            timerPlayer1.stop();
+            timerPlayer2.start();
+        }
+        isPlayer1Turn = !isPlayer1Turn;
+    }
+    public static void handleMoveChessPiece(){
+
+    }
+
+
     private JLabel createTimerLabel(int x, int y) {
         JLabel timerLabel = new JLabel("10:00");
         timerLabel.setFont(new Font("Arial", Font.BOLD, 24));
@@ -155,6 +197,13 @@ public class ChessGameFrame extends JFrame {
         public TimerActionListener(JLabel timerLabel) {
             this.timerLabel = timerLabel;
         }
+        public Timer getTimerPlayer1() {
+            return timerPlayer1;
+        }
+        public Timer getTimerPlayer2() {
+            return timerPlayer2;
+        }
+
 
         @Override
         public void actionPerformed(ActionEvent e) {
