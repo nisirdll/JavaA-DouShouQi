@@ -139,11 +139,10 @@ public class GameController implements GameListener {
     // click an empty cell
     @Override
     public void onPlayerClickCell(ChessboardPoint point, CellComponent component) {
-        Chessboard chessboard = new Chessboard();
-        if (selectedPoint != null && (model.isValidMove(selectedPoint, point) || model.getChessPieceAt(point) == null)) {
-            if (!model.isValidMove(selectedPoint, point)) {
+        if (selectedPoint != null  || model.getChessPieceAt(point) == null) {
+            if (!(model.isValidMove(selectedPoint, point))&&!(model.isValidJumpSquare(selectedPoint,point))) {
                 JOptionPane.showMessageDialog(null, "Invalid Move!", "Error", JOptionPane.ERROR_MESSAGE);
-            } else if (selectedPoint != null) {
+            } else if (model.isValidMove(selectedPoint, point)||model.isValidJumpSquare(selectedPoint,point)) {
                 count++;
                 model.moveChessPiece(selectedPoint, point);
                 view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
@@ -160,10 +159,6 @@ public class GameController implements GameListener {
                 if (pointPiece != null && pointPiece.getName().equals("Den")) {
                     winner = currentPlayer;
                 }
-
-                chessboard.printChessNotation();
-                int roundCount = chessboard.getRoundCount();
-                System.out.println("Round count: " + roundCount);
             }
         }
     }
@@ -171,7 +166,7 @@ public class GameController implements GameListener {
     // click a cell with a chess
     @Override
     public void onPlayerClickChessPiece(ChessboardPoint point, AnimalChessComponent component) {
-        if (selectedPoint == null) {
+        if (selectedPoint == null){
             if (model.getChessPieceOwner(point).equals(currentPlayer)) {
                 selectedPoint = point;
                 component.setSelected(true);
@@ -183,6 +178,7 @@ public class GameController implements GameListener {
         } else if (selectedPoint.equals(point)) {
             selectedPoint = null;
             component.setSelected(false);
+            component.revalidate();
             component.repaint();
             view.repaint();
             view.revalidate();
@@ -203,9 +199,9 @@ public class GameController implements GameListener {
                         || (currentPlayer.equals(PlayerColor.RED) && point.getRow() > 6))) {
                     pointPiece.setRank(0);
                 }
+            }else {
+                JOptionPane.showMessageDialog(null, "Invalid Capture!", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } else {
-            JOptionPane.showMessageDialog(null, "Invalid Move!", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
