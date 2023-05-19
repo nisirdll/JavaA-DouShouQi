@@ -11,11 +11,9 @@ import java.util.Set;
 public class Chessboard {
     private Cell[][] grid;
     private final Set<ChessboardPoint> riverCell = new HashSet<>();
-    private ChessNotation notation;
 
     public Chessboard() {
         this.grid = new Cell[Constant.CHESSBOARD_ROW_SIZE.getNum()][Constant.CHESSBOARD_COL_SIZE.getNum()];//19X19
-        this.notation = new ChessNotation();
         initGrid();
         initPieces();
     }
@@ -56,11 +54,8 @@ public class Chessboard {
 
 
 
-    public Cell getGridAt(ChessboardPoint point) {
-        if (point!=null) {
-            return grid[point.getRow()][point.getCol()];
-        }
-        return null;
+    private Cell getGridAt(ChessboardPoint point) {
+        return grid[point.getRow()][point.getCol()];
     }
 
     private int calculateDistance(ChessboardPoint src, ChessboardPoint dest) {
@@ -78,12 +73,12 @@ public class Chessboard {
     }
 
     public void moveChessPiece(ChessboardPoint src, ChessboardPoint dest) {
-        if (!(isValidMove(src, dest)||isValidJumpSquare(src,dest))) {
+        if (!isValidMove(src, dest)) {
             throw new IllegalArgumentException("Illegal chess move!");
         }
-        setChessPiece(dest, removeChessPiece(src));
-        String move = getChessPieceAt(dest).getName() + " " + src.toString() + " to " + dest.toString();
-        notation.addMove(move);
+        if (dest == null){
+            setChessPiece(dest, removeChessPiece(src));
+        }
     }
 
     public void captureChessPiece(ChessboardPoint src, ChessboardPoint dest) {
@@ -91,9 +86,8 @@ public class Chessboard {
             throw new IllegalArgumentException("Illegal chess capture!");
         }
         // TODO: Finish the method.
-        setChessPiece(dest,removeChessPiece(src));
-        String move = getChessPieceAt(dest).getName() + " " + src.toString() + " captures " + getChessPieceAt(dest).getName() + " at " + dest.toString();
-        notation.addMove(move);
+        removeChessPiece(dest);
+        moveChessPiece(src, dest);// capture the chess piece
     }
 
 
@@ -102,12 +96,13 @@ public class Chessboard {
     }
 
     public PlayerColor getChessPieceOwner(ChessboardPoint point) {
-        return getGridAt(point).getPiece().getOwner();
+        return getChessPieceAt(point).getOwner();
     }
 
     public boolean isValidJumpSquare(ChessboardPoint src, ChessboardPoint dest) {
-
-                if (getChessPieceAt(src) == null || getChessPieceAt(dest) != null) {
+        ChessPiece srcPiece = getChessPieceAt(src);
+        ChessPiece destPiece = getChessPieceAt(dest);
+                if (getChessPieceAt(src) == null ) {
                     return false;
                 }
 
@@ -115,7 +110,6 @@ public class Chessboard {
                 int srcCol = src.getCol();
                 int destRow = dest.getRow();
                 int destCol = dest.getCol();
-
                 // Check if the source and destination are on the same row or column
                 if (srcRow == destRow) {
                     // Check if there are any water squares between the source and destination column
@@ -147,34 +141,28 @@ public class Chessboard {
     }
 
     public boolean isValidMove(ChessboardPoint src, ChessboardPoint dest) {
-        ChessPiece srcPiece = getChessPieceAt(src);
-        ChessPiece destPiece = getChessPieceAt(dest);
 
-        if (srcPiece == null||destPiece == null ) {
+        if (getChessPieceAt(src) == null) {
             return false;
-        }
-        // Check if the source and destination are adjacent horizontally or vertically
-        if (calculateDistance(src, dest) != 1) {
-            return false;
-        }
-        CellType destCellType = getChessPieceAt(dest).getType();
-        if (destCellType == CellType.Dens) {
-            if (srcPiece.getOwner() == destPiece.getOwner()) {
-                // It is not allowed that the piece enters its own den.
+        } // if the source is empty , return false
+        if (getChessPieceAt(dest) != null) {
+            if (getChessPieceAt(src).getOwner() == getChessPieceAt(dest).getOwner()) {
                 return false;
-            } else {
-                // The player wins if their piece enters the opponent's den
-                return true;
             }
-        } else if (destCellType == CellType.Trap) {
-            // If a piece enters the opponent's trap, its rank is reduced to 0 temporarily before exiting
-            if (srcPiece.getOwner() != destPiece.getOwner()) {
-                srcPiece.setRank(0);
-            }
-            // Add the necessary logic here to handle the trapped piece
         }
-        return calculateDistance(src,dest) == 1;
+        if (dest.getName().equals("River")) {
+            if (!getChessPieceAt(src).getName().equals("Rat")) {
+                return false;
+            }
+        }
+        if (dest.getName().equals("Den")) {
+            if (dest.getRow() == 0 || dest.getRow() == 8) {
+                return false; // Cannot enter own den
+            }
+        }
+        return true; // Move is valid
     }
+
 
 
 
@@ -293,12 +281,6 @@ public class Chessboard {
     public void restart() {
         this.initGrid();
         this.initPieces();
-    }
-    public int getRoundCount() {
-        return notation.getMoves().size();
-    }
-    public void printChessNotation() {
-        notation.printNotation();
     }
 }
 

@@ -168,8 +168,8 @@ public class GameController implements GameListener {
                 selectedPoint = point;
                 component.revalidate();
                 component.repaint();
-//                view.repaint();
-//                view.revalidate();
+                view.repaint();
+                view.revalidate();
             }
         } else {
             if (selectedPoint == point) {
@@ -177,27 +177,29 @@ public class GameController implements GameListener {
                 selectedPoint = null;
                 component.revalidate();
                 component.repaint();
-//            view.repaint();
-//            view.revalidate();
+            view.repaint();
+            view.revalidate();
             } else if (model.getChessPieceAt(point) != null && !(selectedPoint == point)) {
-                if (model.isValidCapture(selectedPoint, point)) {
-                    AnimalChessComponent chessComponent = (AnimalChessComponent) view.getGridComponentAt(point).getComponents()[0];
-                    count++;
-                    model.captureChessPiece(selectedPoint, point);
-                    view.removeChessComponentAtGrid(point);
-                    view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
-                    selectedPoint = null;
+                if (model.isValidMove(selectedPoint, point)||model.isValidJumpSquare(selectedPoint,point)) {
+                    if (model.isValidCapture(selectedPoint, point)) {
+                        AnimalChessComponent chessComponent = (AnimalChessComponent) view.getGridComponentAt(point).getComponents()[0];
+                        count++;
+                        model.captureChessPiece(selectedPoint, point);
+                        view.removeChessComponentAtGrid(point);
+                        view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
+                        selectedPoint = null;
 
-                    swapColor();
-                    view.repaint();
+                        swapColor();
+                        view.repaint();
 
-                    ChessPiece pointPiece = model.getChessPieceAt(point);
-                    if (pointPiece != null && pointPiece.getName().equals("Trap") && ((currentPlayer.equals(PlayerColor.BLUE) && point.getRow() < 3)
-                            || (currentPlayer.equals(PlayerColor.RED) && point.getRow() > 6))) {
-                        pointPiece.setRank(0);
+                        ChessPiece pointPiece = model.getChessPieceAt(point);
+                        if (pointPiece != null && pointPiece.getName().equals("Trap") && ((currentPlayer.equals(PlayerColor.BLUE) && point.getRow() < 3)
+                                || (currentPlayer.equals(PlayerColor.RED) && point.getRow() > 6))) {
+                            pointPiece.setRank(0);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Invalid Capture!", "Error", JOptionPane.ERROR_MESSAGE);
                     }
-                } else {
-                    JOptionPane.showMessageDialog(null, "Invalid Capture!", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
