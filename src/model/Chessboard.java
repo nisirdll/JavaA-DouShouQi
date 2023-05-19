@@ -219,7 +219,7 @@ public class Chessboard {
                 return false;
             }
         }
-        return false;
+        return true;
 
     }
         private ChessTimer timer;
