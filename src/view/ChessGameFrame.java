@@ -7,102 +7,89 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 
-/**
- * 这个类表示游戏过程中的整个游戏界面，是一切的载体
- */
-/**
- * This class represents the entire game interface during the game, and is the carrier of everything
- * 这个类是设计游戏界面的主要区域，包括棋盘，棋子，按钮等等
- */
 public class ChessGameFrame extends JFrame {
-    //    public final Dimension FRAME_SIZE ;
-    private final int WIDTH;
-    //    public final int WIDTH = 1100;
-    private final int HEIGHT;
-    //    public final int HEIGHT = 810;
 
+    private  final int HEIGHT ;
+    private  final int WIDTH  ;
     private final int ONE_CHESS_SIZE;
-    //    public final int ONE_CHESS_SIZE = (HEIGHT * 4 / 5) / 9;
+    private view.ChessboardComponent chessboardComponent;
 
-    private ChessboardComponent chessboardComponent;
-    //    private ChessboardComponent chessboardComponent = new ChessboardComponent(ONE_CHESS_SIZE);
+    private Timer timerPlayer1;
+    private Timer timerPlayer2;
+    private JLabel timerLabelPlayer1;
+    private JLabel timerLabelPlayer2;
+    private boolean isPlayer1Turn;
 
-   //
     public ChessGameFrame(int width, int height) {
-        setTitle("这就是自信队-斗兽棋"); //设置标题
-        this.WIDTH = width; //设置窗体大小
-        this.HEIGHT = height; //设置窗体大小
-        this.ONE_CHESS_SIZE = (HEIGHT * 4 / 5) / 9;  //设置棋子大小
+        setTitle("这就是自信队-斗兽棋");
+        this.WIDTH = width;
+        this.HEIGHT = height;
+        this.ONE_CHESS_SIZE = (HEIGHT *4 /5)/9 ;
+        setSize(WIDTH, HEIGHT);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setResizable(false);
+        setLayout(null);
+        timerLabelPlayer1 = createTimerLabel(720, 720);
+        add(timerLabelPlayer1);
 
-        setSize(WIDTH, HEIGHT);  //设置窗体大小
-        setLocationRelativeTo(null); // Center the window.  //设置窗体居中
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); //设置程序关闭按键，如果点击右上方的叉就游戏全部关闭了
-        setLayout(null);  //设置布局管理器为空
+        timerLabelPlayer2 = createTimerLabel(20, 20);
+        add(timerLabelPlayer2);
 
+        timerPlayer1 = createTimer(timerLabelPlayer1);
+        timerPlayer2 = createTimer(timerLabelPlayer2);
 
-        addChessboard();  //在游戏面板中添加棋盘
-        addLabel();  //在游戏面板中添加标签
-        addHelloButton();  //在游戏面板中增加一个按钮，如果按下的话就会显示Hello, world!
-        addSingInButton();  //按下弹出登录界面
-        playMusic();  //播放音乐
-        addToggleMusicButton();  // 添加停止音乐的按钮
+        startGame();
+        addChessboard();
+
+        addHelloButton();
+
+        playMusic();
+        addToggleMusicButton();
+
     }
-    //
 
+
+
+
+    private void startGame() {
+        Random random = new Random();
+        isPlayer1Turn = random.nextBoolean();
+
+        if (isPlayer1Turn) {
+            timerPlayer1.start();
+        } else {
+            timerPlayer2.start();
+        }
+    }
     public ChessboardComponent getChessboardComponent() {
         return chessboardComponent;
     }
-
     public void setChessboardComponent(ChessboardComponent chessboardComponent) {
         this.chessboardComponent = chessboardComponent;
-
     }
-
-    /**
-     * 在游戏面板中添加棋盘
-     */
     private void addChessboard() {
         chessboardComponent = new ChessboardComponent(ONE_CHESS_SIZE);
-        chessboardComponent.setLocation(HEIGHT / 5, HEIGHT / 10);
+        chessboardComponent.setLocation(HEIGHT/5, HEIGHT/10);
         add(chessboardComponent);
-
     }
-
-    /**
-     * 在游戏面板中添加标签
-     */
-    private void addLabel() {
-        JLabel statusLabel = new JLabel("try");
-        statusLabel.setLocation(HEIGHT, HEIGHT / 10);
-        statusLabel.setSize(200, 60);
-        statusLabel.setFont(new Font("Rockwell", Font.BOLD, 20));
-        add(statusLabel);
-    }
-
-    /**
-     * 在游戏面板中增加一个按钮，如果按下的话就会显示Hello, world!
-     */
-
-    private void addHelloButton() {
+    private void addHelloButton(){
         JButton button = new JButton("Back");
-        button.addActionListener((e) -> {
+        button.addActionListener((e)->{
             System.out.println("Click Back");
+            clip.stop();
             new GameUI().setVisible(true);
             dispose();
         });
-        button.setLocation(HEIGHT, HEIGHT / 10 + 120);
-        button.setSize(200, 60);
-        button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        button.setLocation(HEIGHT, HEIGHT/10 + 120);
+        button.setSize(200, 50);
+        button.setFont(new Font("Arial", Font.BOLD, 20));
         add(button);
     }
-    // 创建返回按钮
-
-
-    // 在ChessGameFrame类中添加以下方法
-    private Clip clip;  // 用于控制音乐播放
+    private Clip clip;
     private boolean isPlaying = true;
-
     // 播放音乐
     private void playMusic() {
         try {
@@ -136,7 +123,7 @@ public class ChessGameFrame extends JFrame {
         }
     }
     private void addToggleMusicButton() {
-        JButton button = new JButton("Toggle Music");
+        JButton button = new JButton("Music");
         button.addActionListener((e) -> {
             toggleMusic();
         });
@@ -147,49 +134,48 @@ public class ChessGameFrame extends JFrame {
     }
 
 
-
-
-
-
-
-
-
-    private void addSingInButton() {
-        JButton button = new JButton("Sign In");
-        button.setLocation(HEIGHT, HEIGHT / 10 + 180);
-        button.setSize(200, 60);
-        button.setFont(new Font("Rockwell", Font.BOLD, 20));
-        add(button);
-
-        button.addActionListener(e -> {
-            System.out.println("Click Sign In");
-//            new SignInFrame();
-        });
+    private JLabel createTimerLabel(int x, int y) {
+        JLabel timerLabel = new JLabel("10:00");
+        timerLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        timerLabel.setSize(100, 30);
+        timerLabel.setLocation(x, y);
+        return timerLabel;
     }
-    JLabel timerLabel = new JLabel("00:00");
 
-    Timer timer = new Timer(1000, new ActionListener() {
-        int minutes = 10;
-        int seconds = 30;
+    private Timer createTimer(JLabel timerLabel) {
+        Timer timer = new Timer(1000, new TimerActionListener(timerLabel));
+        timer.setInitialDelay(0);
+        return timer;
+    }
+    private class TimerActionListener implements ActionListener {
+        private JLabel timerLabel;
+        private int minutes = 10;
+        private int seconds = 0;
+
+        public TimerActionListener(JLabel timerLabel) {
+            this.timerLabel = timerLabel;
+        }
+
         @Override
         public void actionPerformed(ActionEvent e) {
-            seconds--;
-            if (seconds == 0) {
-                minutes--;
-                seconds = 59;
-            }
             if (minutes == 0 && seconds == 0) {
-                timer.stop();
+                // Time is up, show negative message and stop the timer
+                JOptionPane.showMessageDialog(null, "Time's up! The other player wins.");
+                ((Timer) e.getSource()).stop();
+            } else {
+                if (seconds == 0) {
+                    minutes--;
+                    seconds = 59;
+                } else {
+                    seconds--;
+                }
+
+                // Update the timer label with the new time
+                timerLabel.setText(String.format("%02d:%02d", minutes, seconds));
             }
-            timerLabel.setText(String.format("%02d:%02d", minutes, seconds));
-
         }
-    });
-
-    public void startTimer() {
-        timer.start();
     }
-//    add(timerLabel, BorderLayout.NORTH);
+
 
 
 }

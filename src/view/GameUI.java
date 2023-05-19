@@ -281,7 +281,7 @@ import java.awt.event.ActionListener;
         private static void showChessboardScreen(JFrame prevoiusFrame){
                 prevoiusFrame.dispose();
 
-                ChessGameFrame chessGameFrame = new ChessGameFrame(1100,810);
+                ChessGameFrame chessGameFrame = new ChessGameFrame(1100,800);
                 new GameController(chessGameFrame.getChessboardComponent(), new Chessboard());
                 chessGameFrame.setVisible(true);
         }

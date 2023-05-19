@@ -2,7 +2,10 @@ package controller;
 
 
 import listener.GameListener;
-import model.*;
+import model.ChessPiece;
+import model.Chessboard;
+import model.ChessboardPoint;
+import model.PlayerColor;
 import view.AnimalChessComponent;
 import view.CellComponent;
 import view.ChessboardComponent;
@@ -44,6 +47,8 @@ public class GameController implements GameListener {
         this.view = view;
         this.model = model;
         this.currentPlayer = PlayerColor.BLUE;
+
+
         // Register the controller to the view
         // so that the view can call the controller's method
         // when the view receives the user's request
