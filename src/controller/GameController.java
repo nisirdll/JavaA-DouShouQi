@@ -136,9 +136,9 @@ public class GameController implements GameListener {
     @Override
     public void onPlayerClickCell(ChessboardPoint point, CellComponent component) {
         if (selectedPoint != null  || model.getChessPieceAt(point) == null) {
-            if (!(model.isValidMove(selectedPoint, point))&&!(model.isValidJumpSquare(selectedPoint,point))) {
+            if (!(model.isValidMove(selectedPoint, point))) {
                 JOptionPane.showMessageDialog(null, "Invalid Move!", "Error", JOptionPane.ERROR_MESSAGE);
-            } else if (model.isValidMove(selectedPoint, point)||model.isValidJumpSquare(selectedPoint,point)) {
+            } else if (model.isValidMove(selectedPoint, point)) {
                 count++;
                 model.moveChessPiece(selectedPoint, point);
                 view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
@@ -180,7 +180,7 @@ public class GameController implements GameListener {
             view.repaint();
             view.revalidate();
             } else if (model.getChessPieceAt(point) != null && !(selectedPoint == point)) {
-                if (model.isValidMove(selectedPoint, point)||model.isValidJumpSquare(selectedPoint,point)) {
+                if (model.isValidMove(selectedPoint, point)) {
                     if (model.isValidCapture(selectedPoint, point)) {
                         AnimalChessComponent chessComponent = (AnimalChessComponent) view.getGridComponentAt(point).getComponents()[0];
                         count++;

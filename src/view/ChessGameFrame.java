@@ -40,7 +40,7 @@ public class ChessGameFrame extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
         setLayout(null);
-        chessboard = new Chessboard(this);
+//        chessboard = new Chessboard(this);
         timerLabelPlayer1 = createTimerLabel(720, 720);
         add(timerLabelPlayer1);
 
@@ -155,9 +155,6 @@ public class ChessGameFrame extends JFrame {
         button.setFont(new Font("Rockwell", Font.BOLD, 14));
         add(button);
     }
-
-
-
     public void increaseRoundCount() {
         roundCount++;
         roundCountLabel.setText("Round: " + roundCount);

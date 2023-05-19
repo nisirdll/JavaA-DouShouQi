@@ -140,28 +140,102 @@ public class Chessboard {
 
     }
 
-    public boolean isValidMove(ChessboardPoint src, ChessboardPoint dest) {
-
-        if (getChessPieceAt(src) == null) {
+//    public boolean isValidMove(ChessboardPoint src, ChessboardPoint dest) {
+//
+//        if (getChessPieceAt(src) == null) {
+//            return false;
+//        } // if the source is empty , return false
+//        if (getChessPieceAt(dest) != null) {
+//            if (getChessPieceAt(src).getOwner() == getChessPieceAt(dest).getOwner()) {
+//                return false;
+//            }
+//        }
+//        if (dest.getName().equals("River")) {
+//            if (!getChessPieceAt(src).getName().equals("Rat")) {
+//                return false;
+//            }
+//        }
+//        if (dest.getName().equals("Den")) {
+//            if (dest.getRow() == 0 || dest.getRow() == 8) {
+//                return false; // Cannot enter own den
+//            }
+//        }
+//        return true; // Move is valid
+//    }
+public boolean isValidMove(ChessboardPoint src, ChessboardPoint dest) {
+    if (getChessPieceAt(src) == null) {
+        return false;
+    } // if the source is empty , return false
+    if (getChessPieceAt(dest) != null) {
+        if (getChessPieceAt(src).getOwner() == getChessPieceAt(dest).getOwner()) {
             return false;
-        } // if the source is empty , return false
-        if (getChessPieceAt(dest) != null) {
-            if (getChessPieceAt(src).getOwner() == getChessPieceAt(dest).getOwner()) {
-                return false;
-            }
         }
-        if (dest.getName().equals("River")) {
-            if (!getChessPieceAt(src).getName().equals("Rat")) {
-                return false;
-            }
-        }
-        if (dest.getName().equals("Den")) {
-            if (dest.getRow() == 0 || dest.getRow() == 8) {
-                return false; // Cannot enter own den
-            }
-        }
-        return true; // Move is valid
     }
+    if (dest.getName().equals("River")) {
+        if (!getChessPieceAt(src).getName().equals("Rat")) {
+            return false;
+        }
+    }// if the destination is river, only rat can move to river
+    if (dest.getName().equals("Den")) {
+        if (dest.getPlayerColor() == getChessPieceOwner(src)) {
+            return false;
+        }
+    }
+    if (calculateDistance(src, dest) != 1) {
+        if (getChessPieceAt(src).getName().equals("Lion") || getChessPieceAt(src).getName().equals("Tiger")) {
+            if (dest.getName().equals("River")) {
+                return false;
+            }
+            if (src.getCol() == dest.getCol()) {
+                int row = src.getRow();
+                int col = src.getCol();
+                if (row > dest.getRow()) {
+                    row--;
+                } else if (row < dest.getRow()) {
+                    row++;
+                }
+                while (row != dest.getRow()) {
+                    if (getChessPieceAt(new ChessboardPoint(row, col)) != null) {
+                        return false;
+                    }
+                    if (!Data.chessboardPointMap.get(row * 10 + col).getName().equals("River")) {
+                        return false;
+                    }
+                    if (row > dest.getRow()) {
+                        row--;
+                    } else {
+                        row++;
+                    }
+                }
+                return true;
+            }
+            if (src.getRow() == dest.getRow()) {
+                int row = src.getRow();
+                int col = src.getCol();
+                if (col > dest.getCol()) {
+                    col--;
+                } else if (col < dest.getCol()) {
+                    col++;
+                }
+                while (col != dest.getCol()) {
+                    if (getChessPieceAt(new ChessboardPoint(row, col)) != null) {
+                        return false;
+                    }
+                    if (!Data.chessboardPointMap.get(row * 10 + col).getName().equals("River")) {
+                        return false;
+                    }
+                    if (col > dest.getCol()) {
+                        col--;
+                    } else {
+                        col++;
+                    }
+                }
+                return true;
+            }
+        }
+    }// if the distance is not 1, only lion and tiger can jump over the river
+    return calculateDistance(src, dest) == 1;
+}
 
 
 
