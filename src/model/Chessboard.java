@@ -106,42 +106,44 @@ public class Chessboard {
     }
 
     public boolean isValidJumpSquare(ChessboardPoint src, ChessboardPoint dest) {
-        if (getChessPieceAt(src) == null || getChessPieceAt(dest) != null) {
-            return false;
-        }
 
-        int srcRow = src.getRow();
-        int srcCol = src.getCol();
-        int destRow = dest.getRow();
-        int destCol = dest.getCol();
-
-        // Check if the source and destination are on the same row or column
-        if (srcRow == destRow) {
-            // Check if there are any water squares between the source and destination column
-            int minCol = Math.min(srcCol, destCol);
-            int maxCol = Math.max(srcCol, destCol);
-            for (int col = minCol + 1; col < maxCol; col++) {
-                ChessboardPoint point = new ChessboardPoint(srcRow, col);
-                if (riverCell.contains(point)) {
-                    // There is a rat on the water square, so the jump is blocked
+                if (getChessPieceAt(src) == null || getChessPieceAt(dest) != null) {
                     return false;
                 }
-            }
-        } else if (srcCol == destCol) {
-            // Check if there are any water squares between the source and destination row
-            int minRow = Math.min(srcRow, destRow);
-            int maxRow = Math.max(srcRow, destRow);
-            for (int row = minRow + 1; row < maxRow; row++) {
-                ChessboardPoint point = new ChessboardPoint(row, srcCol);
-                if (riverCell.contains(point)) {
-                    // There is a rat on the water square, so the jump is blocked
-                    return false;
-                }
-            }
-        }
 
-        // No water squares blocking the jump
-        return true;
+                int srcRow = src.getRow();
+                int srcCol = src.getCol();
+                int destRow = dest.getRow();
+                int destCol = dest.getCol();
+
+                // Check if the source and destination are on the same row or column
+                if (srcRow == destRow) {
+                    // Check if there are any water squares between the source and destination column
+                    int minCol = Math.min(srcCol, destCol);
+                    int maxCol = Math.max(srcCol, destCol);
+                    for (int col = minCol + 1; col < maxCol; col++) {
+                        ChessboardPoint point = new ChessboardPoint(srcRow, col);
+                        if (riverCell.contains(point)) {
+                            // There is a rat on the water square, so the jump is blocked
+                            return false;
+                        }
+                    }
+                } else if (srcCol == destCol) {
+                    // Check if there are any water squares between the source and destination row
+                    int minRow = Math.min(srcRow, destRow);
+                    int maxRow = Math.max(srcRow, destRow);
+                    for (int row = minRow + 1; row < maxRow; row++) {
+                        ChessboardPoint point = new ChessboardPoint(row, srcCol);
+                        if (riverCell.contains(point)) {
+                            // There is a rat on the water square, so the jump is blocked
+                            return false;
+                        }
+                    }
+                }
+
+                // No water squares blocking the jump
+                return true;
+
     }
 
     public boolean isValidMove(ChessboardPoint src, ChessboardPoint dest) {
