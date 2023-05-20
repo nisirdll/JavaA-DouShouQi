@@ -3,6 +3,7 @@ package view;
 import controller.GameController;
 import model.Chessboard;
 
+import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
@@ -10,11 +11,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.Random;
 
 public class ChessGameFrame extends JFrame {
-    private Chessboard chessboard;
+
+
+    private String[] backgroundImages = {
+            "resource/img/background1.png",
+            "resource/img/background2.png"
+    };
+    private int currentBackgroundIndex = 0;
+    private JLabel backgroundLabel;
+    private JButton startTimerButton;
+    private JButton stopTimerButton;
+    private boolean isTimer1Running;
+    private boolean isTimer2Running;
     private JLabel roundCountLabel;
+
+    private Chessboard chessboard;
     private JLabel currentPlayerLabel;
     private boolean isPlayer1Turn;
     private int roundCount;
@@ -62,6 +75,36 @@ public class ChessGameFrame extends JFrame {
         playMusic();
         addToggleMusicButton();
 
+
+        startTimerButton = new JButton("Blue Turn");
+        startTimerButton.setLocation(WIDTH / 2 + 120, HEIGHT / 2 - 20);
+        startTimerButton.setSize(120, 30);
+        startTimerButton.setFont(new Font("Arial", Font.BOLD, 14));
+        startTimerButton.addActionListener(e -> startTimer());
+        add(startTimerButton);
+
+        stopTimerButton = new JButton("Red Turn");
+        stopTimerButton.setLocation(WIDTH / 2 + 120, HEIGHT / 2 - 60);
+        stopTimerButton.setSize(120, 30);
+        stopTimerButton.setFont(new Font("Arial", Font.BOLD, 14));
+        stopTimerButton.addActionListener(e -> stopTimer());
+        add(stopTimerButton);
+        try {
+            Image backgroundImage = ImageIO.read(new File("resource/img/background1.png"));
+            backgroundLabel = new JLabel(new ImageIcon(backgroundImage));
+            backgroundLabel.setBounds(0, 0, WIDTH, HEIGHT);
+            add(backgroundLabel);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        JButton themeButton = new JButton("Theme");
+        themeButton.setLocation(WIDTH - 220, 50);
+        themeButton.setSize(200, 30);
+        themeButton.setFont(new Font("Arial", Font.BOLD, 14));
+        themeButton.addActionListener(e -> changeBackground());
+        add(themeButton);
+
         restartButton = new JButton("Restart");
         restartButton.addActionListener(new ActionListener() {
             @Override
@@ -73,18 +116,26 @@ public class ChessGameFrame extends JFrame {
         restartButton.setSize(200, 50);
         restartButton.setFont(new Font("Arial", Font.BOLD, 20));
         add(restartButton);
+
+
     }
     private void startGame() {
         addChessboard();
-        Random random = new Random();
-        isPlayer1Turn = random.nextBoolean();
+//        Random random = new Random();
+        isPlayer1Turn = true;
         roundCount = 0;
 
-        if (isPlayer1Turn) {
-            timerPlayer1.start();
-        } else {
-            timerPlayer2.start();
-        }
+
+        timerPlayer1.start();
+
+        roundCountLabel = new JLabel("Round: " + roundCount);
+        roundCountLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        roundCountLabel.setSize(100, 30);
+        roundCountLabel.setLocation(WIDTH / 2 - 50, HEIGHT/20);
+        add(roundCountLabel);
+
+
+
         currentPlayerLabel = new JLabel("Current Player: " + (isPlayer1Turn ? "Player 1" : "Player 2"));
         currentPlayerLabel.setFont(new Font("Arial", Font.BOLD, 24));
         currentPlayerLabel.setSize(200, 30);
@@ -100,6 +151,33 @@ public class ChessGameFrame extends JFrame {
             mainFrame.setVisible(true);
         });
 
+    }
+    private void changeBackground() {
+        try {
+            currentBackgroundIndex = (currentBackgroundIndex + 1) % backgroundImages.length;
+            String newBackgroundImagePath = backgroundImages[currentBackgroundIndex];
+            Image newBackgroundImage = ImageIO.read(new File(newBackgroundImagePath));
+            backgroundLabel.setIcon(new ImageIcon(newBackgroundImage));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void startTimer(){
+        if(!isTimer1Running){
+            timerPlayer1.start();
+            isTimer1Running = true;
+            isTimer2Running = false;
+            increaseRoundCount(1);
+        }
+    }
+    private void stopTimer(){
+        if(!isTimer2Running){
+            timerPlayer2.start();
+            isTimer2Running = true;
+            isTimer1Running = false;
+            increaseRoundCount(1);
+        }
     }
     public ChessboardComponent getChessboardComponent() {
         return chessboardComponent;
@@ -169,7 +247,7 @@ public class ChessGameFrame extends JFrame {
         button.setFont(new Font("Rockwell", Font.BOLD, 14));
         add(button);
     }
-    public void increaseRoundCount() {
+    public int increaseRoundCount( int roundCount) {
         roundCount++;
         roundCountLabel.setText("Round: " + roundCount);
         currentPlayerLabel.setText("Current Player: " + (isPlayer1Turn ? "Player 2" : "Player 1"));
@@ -181,6 +259,7 @@ public class ChessGameFrame extends JFrame {
             timerPlayer2.start();
         }
         isPlayer1Turn = !isPlayer1Turn;
+        return roundCount;
     }
 
 
@@ -225,6 +304,19 @@ public class ChessGameFrame extends JFrame {
 
                 // Update the timer label with the new time
                 timerLabel.setText(String.format("%02d:%02d", minutes, seconds));
+                if (isTimer1Running && minutes == 0 && seconds == 0) {
+                    // Time is up, show negative message and stop the timer
+                    JOptionPane.showMessageDialog(null, "Time's up! Player 2 wins.");
+                    timerPlayer1.stop();
+                } else if (isTimer2Running && minutes == 0 && seconds == 0) {
+                    // Time is up, show negative message and stop the timer
+                    JOptionPane.showMessageDialog(null, "Time's up! Player 1 wins.");
+                    timerPlayer2.stop();
+                } else {
+                    // Update the timer label with the new time
+                    timerLabel.setText(String.format("%02d:%02d", minutes, seconds));
+                }
+
             }
         }
     }

@@ -1,7 +1,5 @@
 package model;
 
-import controller.ChessTimer;
-
 import java.util.HashSet;
 import java.util.Set;
 /**
@@ -300,20 +298,20 @@ public boolean isValidMove(ChessboardPoint src, ChessboardPoint dest) {
 //        return true;
 //
 //    }
-        private ChessTimer timer;
-
-        public void ChessBoard() {
-            timer = new ChessTimer();
-        }
-
-        public void startGame() {
-            timer.start();
-            while (true) {
-                // game logic here
-                // switch player when necessary
-                timer.switchPlayer();
-            }
-        }
+//        private ChessTimer timer;
+//
+//        public void ChessBoard() {
+//            timer = new ChessTimer();
+//        }
+//
+//        public void startGame() {
+//            timer.start();
+//            while (true) {
+//                // game logic here
+//                // switch player when necessary
+//                timer.switchPlayer();
+//            }
+//        }
         public boolean isDensOccupied(PlayerColor playerColor){
             ChessPiece DensPiece = null;
             // Find the ChessPiece in the dens based on the playerColor
