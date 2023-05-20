@@ -21,11 +21,15 @@ public class ChessPiece {
     }
     public CellType getType(){return type;}
     public boolean canCapture(ChessPiece target) {
+        if (target == null) {
+            return false;
+        }
+
         // TODO: Finish this method!
-        if (this.rank>=target.rank){
+        if (this.rank >= target.rank && (this.rank != 8 || target.rank != 1)) {
             return true;
         }
-        else if (this.getName().equals("Cat")&&target.getName().equals("Elephant")) {
+        if (this.rank == 1 && target.rank == 8) {
             return true;
         }
         return false;

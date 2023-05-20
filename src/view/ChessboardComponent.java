@@ -2,10 +2,7 @@ package view;
 
 
 import controller.GameController;
-import model.Cell;
-import model.ChessPiece;
-import model.Chessboard;
-import model.ChessboardPoint;
+import model.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -97,27 +94,32 @@ public class ChessboardComponent extends JComponent {
 
         densCell.add(new ChessboardPoint(0, 3));
         densCell.add(new ChessboardPoint(8, 3));
-
         for (int i = 0; i < CHESSBOARD_ROW_SIZE.getNum(); i++) {
             for (int j = 0; j < CHESSBOARD_COL_SIZE.getNum(); j++) {
                 ChessboardPoint temp = new ChessboardPoint(i, j);
+                Data.chessboardPointMap.put(temp.hashCode(), temp);
+// Forrest edited.}
+            }
+        }
+        for (int k = 0; k< CHESSBOARD_ROW_SIZE.getNum(); k++) {
+            for (int b = 0; b < CHESSBOARD_COL_SIZE.getNum(); b++) {
+                ChessboardPoint temp = new ChessboardPoint(k, b);
                 CellComponent cell;
                 if (riverCell.contains(temp)) {
-                    cell = new CellComponent(RiverColor, calculatePoint(i, j), CHESS_SIZE);
+                    cell = new CellComponent(RiverColor, calculatePoint(k,b), CHESS_SIZE);
                     this.add(cell);
                 } else if (trapCell.contains(temp)) {
-                    cell = new CellComponent(Brown, calculatePoint(i, j), CHESS_SIZE);
+                    cell = new CellComponent(Brown, calculatePoint(k, b), CHESS_SIZE);
                     cell.isTrap = true;
                     this.add(cell);
                 } else if (densCell.contains(temp)) {
-                    cell = new CellComponent(Yellow, calculatePoint(i, j), CHESS_SIZE);
+                    cell = new CellComponent(Yellow, calculatePoint(k, b), CHESS_SIZE);
                     cell.isDen = true;
-                    this.add(cell);
                 }else {
-                    cell = new CellComponent(TableColor, calculatePoint(i, j), CHESS_SIZE);
+                    cell = new CellComponent(TableColor, calculatePoint(k, b), CHESS_SIZE);
                     this.add(cell);
                 }
-                gridComponents[i][j] = cell;
+                gridComponents[k][b] = cell;
             }
         }
     }

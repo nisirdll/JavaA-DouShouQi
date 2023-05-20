@@ -8,7 +8,6 @@ import view.CellComponent;
 import view.ChessboardComponent;
 
 import javax.swing.*;
-import java.util.ArrayList;
 
 /**
  * Controller is the connection between model and view,
@@ -136,7 +135,9 @@ public class GameController implements GameListener {
     // click an empty cell
     @Override
     public void onPlayerClickCell(ChessboardPoint point, CellComponent component) {
-        if (selectedPoint != null && model.isValidMove(selectedPoint, point) || model.getChessPieceAt(point)==null) {//如果刚刚选有棋子且（空cell可以移动）或者（point是空的）
+//        possibleMovePoints = null;
+//        setCanStepFalse();
+        if (selectedPoint != null && model.isValidMove(selectedPoint, point) || model.getChessPieceAt(point) ==null) {//如果刚刚选有棋子且（空cell可以移动）或者（point是空的）
             if (!model.isValidMove(selectedPoint, point)) {
 
                 component.revalidate();
@@ -156,17 +157,22 @@ public class GameController implements GameListener {
                 selectedPoint = null;
                 swapColor();
                 view.repaint();
-                ChessPiece pointPiece = model.getChessPieceAt(point);
-                if (pointPiece != null && pointPiece.getName().equals("Trap")
-                        && ((currentPlayer.equals(PlayerColor.BLUE) && point.getRow() < 3)
-                        || (currentPlayer.equals(PlayerColor.RED) && point.getRow() > 6))) {
-                    pointPiece.setRank(0);
+                // TODO: if the chess enter Dens or Traps and so on
+                if (point.getName().equals("Trap")
+                        && ((this.currentPlayer.equals(PlayerColor.BLUE) && point.getRow() < 3)
+                        || (this.currentPlayer.equals(PlayerColor.RED) && point.getRow() > 6))) {
+                    this.model.getChessPieceAt(point).setRank(0);
                 }
-                if (pointPiece != null && pointPiece.getName().equals("Den")) {
+                if (point.getName().equals("Den")) {
                     winner = currentPlayer;
-                }
-            }
+//                    VictoryDialog a = new VictoryDialog();
+//                    VictoryDialog.displayWinning(winner, a);
+                }// finish the game if the chess enter the Den
+            } // finish the game
         }
+//        if (this.currentPlayer.equals(PlayerColor.RED)) {
+//            AIPlayIntegrated(getAiStatus());
+//        }
     }
 
     // click a cell with a chess
