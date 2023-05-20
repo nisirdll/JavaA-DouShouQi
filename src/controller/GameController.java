@@ -8,6 +8,7 @@ import view.CellComponent;
 import view.ChessboardComponent;
 
 import javax.swing.*;
+import java.util.ArrayList;
 
 /**
  * Controller is the connection between model and view,
@@ -135,17 +136,26 @@ public class GameController implements GameListener {
     // click an empty cell
     @Override
     public void onPlayerClickCell(ChessboardPoint point, CellComponent component) {
-        if (selectedPoint != null  || model.getChessPieceAt(point) == null) {
-            if (!(model.isValidMove(selectedPoint, point))) {
-                JOptionPane.showMessageDialog(null, "Invalid Move!", "Error", JOptionPane.ERROR_MESSAGE);
-            } else if (model.isValidMove(selectedPoint, point)) {
+        if (selectedPoint != null && model.isValidMove(selectedPoint, point) || model.getChessPieceAt(point)==null) {//如果刚刚选有棋子且（空cell可以移动）或者（point是空的）
+            if (!model.isValidMove(selectedPoint, point)) {
+
+                component.revalidate();
+                component.repaint();
+                view.repaint();
+                view.revalidate();
+                JOptionPane.showMessageDialog(null, "Invalid Move!");
+            } else if (model.isValidMove(selectedPoint, point) && selectedPoint != null) {//如果是合法移动 else if (model.isValidMove(selectedPoint, point) && selectedPoint != null) {
+                if (model.isValidMove(selectedPoint, point) == false) {
+                    JOptionPane.showMessageDialog(null, "行棋步骤错误，错误编码:105", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+//                model.recordStep(selectedPoint, point, count, null);
                 count++;
                 model.moveChessPiece(selectedPoint, point);
+//                possibleMovePoints = null;
                 view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
                 selectedPoint = null;
                 swapColor();
                 view.repaint();
-
                 ChessPiece pointPiece = model.getChessPieceAt(point);
                 if (pointPiece != null && pointPiece.getName().equals("Trap")
                         && ((currentPlayer.equals(PlayerColor.BLUE) && point.getRow() < 3)
@@ -164,45 +174,50 @@ public class GameController implements GameListener {
     public void onPlayerClickChessPiece(ChessboardPoint point, AnimalChessComponent component) {
         if (selectedPoint == null) {
             if (model.getChessPieceOwner(point).equals(currentPlayer)) {
-                component.setSelected(true);
+//                possibleMovePoints = getAndSetIsValidMovePoints(point);
+//                possibleMovePoints = new ArrayList<>(getAndSetIsValidMovePoints(point));
                 selectedPoint = point;
+//                model.findPossibleStep(point);
+                component.setSelected(true);
                 component.revalidate();
                 component.repaint();
                 view.repaint();
                 view.revalidate();
             }
-        } else {
-            if (selectedPoint == point) {
-                component.setSelected(false);
-                selectedPoint = null;
-                component.revalidate();
-                component.repaint();
+        } else if (selectedPoint.equals(point)) {//click the same chess again and cancel selection
+            selectedPoint = null;
+//            possibleMovePoints = null;
+//            setCanStepFalse();
+            component.setSelected(false);
+            component.repaint();
             view.repaint();
             view.revalidate();
-            } else if (model.getChessPieceAt(point) != null && !(selectedPoint == point)) {
-                if (model.isValidMove(selectedPoint, point)) {
-                    if (model.isValidCapture(selectedPoint, point)) {
-                        AnimalChessComponent chessComponent = (AnimalChessComponent) view.getGridComponentAt(point).getComponents()[0];
-                        count++;
-                        model.captureChessPiece(selectedPoint, point);
-                        view.removeChessComponentAtGrid(point);
-                        view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
-                        selectedPoint = null;
+        } else if (!(model.getChessPieceAt(point) == null)) {
+            if (model.isValidCapture(selectedPoint, point)) {
+//                possibleMovePoints = null;
+//                setCanStepFalse();
+                AnimalChessComponent chessComponent = (AnimalChessComponent) view.getGridComponentAt(point).getComponents()[0];
+//                model.recordStep(selectedPoint, point, count, chessComponent);
+                count++;
+                model.captureChessPiece(selectedPoint, point);
+//                new BGMofClick().PlayClickBGM("resource/Music/tear.wav");
+                view.removeChessComponentAtGrid(point);
+                view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
+                selectedPoint = null;
 
-                        swapColor();
-                        view.repaint();
-
-                        ChessPiece pointPiece = model.getChessPieceAt(point);
-                        if (pointPiece != null && pointPiece.getName().equals("Trap") && ((currentPlayer.equals(PlayerColor.BLUE) && point.getRow() < 3)
-                                || (currentPlayer.equals(PlayerColor.RED) && point.getRow() > 6))) {
-                            pointPiece.setRank(0);
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Invalid Capture!", "Error", JOptionPane.ERROR_MESSAGE);
-                    }
+                swapColor();
+                view.repaint();
+                if (point.getName().equals("Trap") && ((this.currentPlayer.equals(PlayerColor.BLUE) && point.getRow() < 3)
+                        || (this.currentPlayer.equals(PlayerColor.RED) && point.getRow() > 6))) {
+                    this.model.getChessPieceAt(point).setRank(0);
                 }
             }
-        }
+        } else {
 
+            JOptionPane.showMessageDialog(null, "行棋步骤错误，错误编码:105", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+//        if (this.currentPlayer.equals(PlayerColor.RED)) {
+//            AIPlayIntegrated(getAiStatus());
+//        }
     }
 }

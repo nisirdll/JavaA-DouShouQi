@@ -46,10 +46,7 @@ public class Chessboard {
     }
 
     public ChessPiece getChessPieceAt(ChessboardPoint point) {
-        if (point != null) {
-            return getGridAt(point).getPiece();
-        }
-        return null;
+        return getGridAt(point).getPiece();
     }
 
 
@@ -76,7 +73,7 @@ public class Chessboard {
         if (!isValidMove(src, dest)) {
             throw new IllegalArgumentException("Illegal chess move!");
         }
-        if (dest == null){
+        if (getChessPieceAt(dest) == null){
             setChessPiece(dest, removeChessPiece(src));
         }
     }
@@ -238,52 +235,71 @@ public boolean isValidMove(ChessboardPoint src, ChessboardPoint dest) {
 }
 
 
-
-
     public boolean isValidCapture(ChessboardPoint src, ChessboardPoint dest) {
-        riverCell.add(new ChessboardPoint(3, 1));
-        riverCell.add(new ChessboardPoint(3, 2));
-        riverCell.add(new ChessboardPoint(4, 1));
-        riverCell.add(new ChessboardPoint(4, 2));
-        riverCell.add(new ChessboardPoint(5, 1));
-        riverCell.add(new ChessboardPoint(5, 2));
 
-        riverCell.add(new ChessboardPoint(3, 4));
-        riverCell.add(new ChessboardPoint(3, 5));
-        riverCell.add(new ChessboardPoint(4, 4));
-        riverCell.add(new ChessboardPoint(4, 5));
-        riverCell.add(new ChessboardPoint(5, 4));
-        riverCell.add(new ChessboardPoint(5, 5));
-        // TODO:Fix this method
-        ChessPiece srcPiece = getChessPieceAt(src);
-        ChessPiece destPiece = getChessPieceAt(dest);
-        //If the piece is null,it's not valid
-        if (src == null || dest == null) {
+        if (!isValidMove(src, dest)) {
+            return false;
+        } // if the move is not valid, return false
+        if (getChessPieceAt(src) == null || getChessPieceAt(dest) == null) {
             return false;
         }
-        // If the pieces belong to the same player, the capture is not valid.
-        if (srcPiece.getOwner() == destPiece.getOwner()) {
+        if (getChessPieceAt(src).getOwner() == getChessPieceAt(dest).getOwner()) {
             return false;
-        }
-        //If the method canCapture returns true......
-        if (srcPiece.canCapture(destPiece)) {
-            //tiger and lion jump across the river to catch the animals
-            if (srcPiece.getName().equals("Tiger") || srcPiece.getName().equals("Lion")) {
-                if (isValidJumpSquare(src, dest) && !riverCell.contains("Rat")) {
-                    return true;
-                }
-            }
-            // Rat cannot capture Elephant on land and cannot be captured on water
-            if (srcPiece.getName().equals("Rat")&&riverCell.contains("Rat")&&destPiece.getName().equals("Elephant")) {
+        }// if the chess piece is the same color, return false
+        if (getChessPieceAt(src).canCapture(getChessPieceAt(dest))) {
+            if (src.getName().equals("River") && getChessPieceAt(src).getName().equals("Rat")) {
                 return false;
-            }
-            if (destPiece.getName().equals("Rat")&&riverCell.contains("rat")){
-                return false;
-            }
-        }
-        return true;
+            }// if the source is river and the chess piece is rat, return false
+            return true;
+        }// if the chess piece can capture the other chess piece, return true
+        return false;
 
     }
+
+//    public boolean isValidCapture(ChessboardPoint src, ChessboardPoint dest) {
+//        riverCell.add(new ChessboardPoint(3, 1));
+//        riverCell.add(new ChessboardPoint(3, 2));
+//        riverCell.add(new ChessboardPoint(4, 1));
+//        riverCell.add(new ChessboardPoint(4, 2));
+//        riverCell.add(new ChessboardPoint(5, 1));
+//        riverCell.add(new ChessboardPoint(5, 2));
+//
+//        riverCell.add(new ChessboardPoint(3, 4));
+//        riverCell.add(new ChessboardPoint(3, 5));
+//        riverCell.add(new ChessboardPoint(4, 4));
+//        riverCell.add(new ChessboardPoint(4, 5));
+//        riverCell.add(new ChessboardPoint(5, 4));
+//        riverCell.add(new ChessboardPoint(5, 5));
+//        // TODO:Fix this method
+//        ChessPiece srcPiece = getChessPieceAt(src);
+//        ChessPiece destPiece = getChessPieceAt(dest);
+//        //If the piece is null,it's not valid
+//        if (src == null || dest == null) {
+//            return false;
+//        }
+//        // If the pieces belong to the same player, the capture is not valid.
+//        if (srcPiece.getOwner() == destPiece.getOwner()) {
+//            return false;
+//        }
+//        //If the method canCapture returns true......
+//        if (srcPiece.canCapture(destPiece)) {
+//            //tiger and lion jump across the river to catch the animals
+//            if (srcPiece.getName().equals("Tiger") || srcPiece.getName().equals("Lion")) {
+//                if (isValidMove(src, dest) && !riverCell.contains("Rat")) {
+//                    return true;
+//                }
+//            }
+//            // Rat cannot capture Elephant on land and cannot be captured on water
+//            if (srcPiece.getName().equals("Rat")&&riverCell.contains("Rat")&&destPiece.getName().equals("Elephant")) {
+//                return false;
+//            }
+//            if (destPiece.getName().equals("Rat")&&riverCell.contains("rat")){
+//                return false;
+//            }
+//        }
+//        return true;
+//
+//    }
         private ChessTimer timer;
 
         public void ChessBoard() {
