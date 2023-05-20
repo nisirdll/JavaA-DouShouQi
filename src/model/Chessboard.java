@@ -1,12 +1,13 @@
 package model;
 
+import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
 /**
  * This class store the real chess information.
  * The Chessboard has 9*7 cells, and each cell has a position for chess
  */
-public class Chessboard {
+public class Chessboard implements Serializable {
     private Cell[][] grid;
     private final Set<ChessboardPoint> riverCell = new HashSet<>();
 
@@ -25,28 +26,27 @@ public class Chessboard {
     }
 
     public void initPieces() {
-        grid[2][6].setPiece(new ChessPiece(PlayerColor.RED, "Elephant", 8,CellType.Piece,"/img/animals/elephant.png"));
-        grid[6][0].setPiece(new ChessPiece(PlayerColor.BLUE, "Elephant", 8,CellType.Piece,"/img/animals/elephant.png"));
-        grid[0][0].setPiece(new ChessPiece(PlayerColor.RED, "Lion", 7,CellType.Piece,"/img/animals/lion.png"));
-        grid[8][6].setPiece(new ChessPiece(PlayerColor.BLUE, "Lion", 7,CellType.Piece,"/img/animals/lion.png"));
-        grid[0][6].setPiece(new ChessPiece(PlayerColor.RED, "Tiger", 6,CellType.Piece,"/img/animals/tiger.png"));
-        grid[8][0].setPiece(new ChessPiece(PlayerColor.BLUE, "Tiger", 6,CellType.Piece,"/img/animals/tiger.png"));
-        grid[2][2].setPiece(new ChessPiece(PlayerColor.RED, "Leopard", 5,CellType.Piece,"/img/animals/leopard.png"));
-        grid[6][4].setPiece(new ChessPiece(PlayerColor.BLUE, "Leopard", 5,CellType.Piece,"/img/animals/leopard.png"));
-        grid[2][4].setPiece(new ChessPiece(PlayerColor.RED, "Wolf", 4,CellType.Piece,"/img/animals/wolf.png"));
-        grid[6][2].setPiece(new ChessPiece(PlayerColor.BLUE, "Wolf", 4,CellType.Piece,"/img/animals/wolf.png"));
-        grid[1][1].setPiece(new ChessPiece(PlayerColor.RED, "Dog", 3,CellType.Piece,"/img/animals/dog.png"));
-        grid[7][5].setPiece(new ChessPiece(PlayerColor.BLUE, "Dog", 3,CellType.Piece,"/img/animals/dog.png"));
-        grid[1][5].setPiece(new ChessPiece(PlayerColor.RED, "Cat", 2,CellType.Piece,"/img/animals/cat.png"));
-        grid[7][1].setPiece(new ChessPiece(PlayerColor.BLUE, "Cat", 2,CellType.Piece,"/img/animals/cat.png"));
-        grid[2][0].setPiece(new ChessPiece(PlayerColor.RED, "Rat", 1,CellType.Piece,"/img/animals/rat.png"));
-        grid[6][6].setPiece(new ChessPiece(PlayerColor.BLUE, "Rat", 1,CellType.Piece,"/img/animals/rat.png"));
+        grid[2][6].setPiece(new ChessPiece(PlayerColor.RED, "Elephant", 8, CellType.Piece, "/img/animals/elephant.png"));
+        grid[6][0].setPiece(new ChessPiece(PlayerColor.BLUE, "Elephant", 8, CellType.Piece, "/img/animals/elephant.png"));
+        grid[0][0].setPiece(new ChessPiece(PlayerColor.RED, "Lion", 7, CellType.Piece, "/img/animals/lion.png"));
+        grid[8][6].setPiece(new ChessPiece(PlayerColor.BLUE, "Lion", 7, CellType.Piece, "/img/animals/lion.png"));
+        grid[0][6].setPiece(new ChessPiece(PlayerColor.RED, "Tiger", 6, CellType.Piece, "/img/animals/tiger.png"));
+        grid[8][0].setPiece(new ChessPiece(PlayerColor.BLUE, "Tiger", 6, CellType.Piece, "/img/animals/tiger.png"));
+        grid[2][2].setPiece(new ChessPiece(PlayerColor.RED, "Leopard", 5, CellType.Piece, "/img/animals/leopard.png"));
+        grid[6][4].setPiece(new ChessPiece(PlayerColor.BLUE, "Leopard", 5, CellType.Piece, "/img/animals/leopard.png"));
+        grid[2][4].setPiece(new ChessPiece(PlayerColor.RED, "Wolf", 4, CellType.Piece, "/img/animals/wolf.png"));
+        grid[6][2].setPiece(new ChessPiece(PlayerColor.BLUE, "Wolf", 4, CellType.Piece, "/img/animals/wolf.png"));
+        grid[1][1].setPiece(new ChessPiece(PlayerColor.RED, "Dog", 3, CellType.Piece, "/img/animals/dog.png"));
+        grid[7][5].setPiece(new ChessPiece(PlayerColor.BLUE, "Dog", 3, CellType.Piece, "/img/animals/dog.png"));
+        grid[1][5].setPiece(new ChessPiece(PlayerColor.RED, "Cat", 2, CellType.Piece, "/img/animals/cat.png"));
+        grid[7][1].setPiece(new ChessPiece(PlayerColor.BLUE, "Cat", 2, CellType.Piece, "/img/animals/cat.png"));
+        grid[2][0].setPiece(new ChessPiece(PlayerColor.RED, "Rat", 1, CellType.Piece, "/img/animals/rat.png"));
+        grid[6][6].setPiece(new ChessPiece(PlayerColor.BLUE, "Rat", 1, CellType.Piece, "/img/animals/rat.png"));
     }
 
     public ChessPiece getChessPieceAt(ChessboardPoint point) {
         return getGridAt(point).getPiece();
     }
-
 
 
     private Cell getGridAt(ChessboardPoint point) {
@@ -71,7 +71,7 @@ public class Chessboard {
         if (!isValidMove(src, dest)) {
             throw new IllegalArgumentException("Illegal chess move!");
         }
-        if (getChessPieceAt(dest) == null){
+        if (getChessPieceAt(dest) == null) {
             setChessPiece(dest, removeChessPiece(src));
         }
     }
@@ -97,43 +97,79 @@ public class Chessboard {
     public boolean isValidJumpSquare(ChessboardPoint src, ChessboardPoint dest) {
         ChessPiece srcPiece = getChessPieceAt(src);
         ChessPiece destPiece = getChessPieceAt(dest);
-                if (getChessPieceAt(src) == null ) {
+        if (getChessPieceAt(src) == null) {
+            return false;
+        }
+
+        int srcRow = src.getRow();
+        int srcCol = src.getCol();
+        int destRow = dest.getRow();
+        int destCol = dest.getCol();
+        // Check if the source and destination are on the same row or column
+        if (srcRow == destRow) {
+            // Check if there are any water squares between the source and destination column
+            int minCol = Math.min(srcCol, destCol);
+            int maxCol = Math.max(srcCol, destCol);
+            for (int col = minCol + 1; col < maxCol; col++) {
+                ChessboardPoint point = new ChessboardPoint(srcRow, col);
+                if (riverCell.contains(point)) {
+                    // There is a rat on the water square, so the jump is blocked
                     return false;
                 }
-
-                int srcRow = src.getRow();
-                int srcCol = src.getCol();
-                int destRow = dest.getRow();
-                int destCol = dest.getCol();
-                // Check if the source and destination are on the same row or column
-                if (srcRow == destRow) {
-                    // Check if there are any water squares between the source and destination column
-                    int minCol = Math.min(srcCol, destCol);
-                    int maxCol = Math.max(srcCol, destCol);
-                    for (int col = minCol + 1; col < maxCol; col++) {
-                        ChessboardPoint point = new ChessboardPoint(srcRow, col);
-                        if (riverCell.contains(point)) {
-                            // There is a rat on the water square, so the jump is blocked
-                            return false;
-                        }
-                    }
-                } else if (srcCol == destCol) {
-                    // Check if there are any water squares between the source and destination row
-                    int minRow = Math.min(srcRow, destRow);
-                    int maxRow = Math.max(srcRow, destRow);
-                    for (int row = minRow + 1; row < maxRow; row++) {
-                        ChessboardPoint point = new ChessboardPoint(row, srcCol);
-                        if (riverCell.contains(point)) {
-                            // There is a rat on the water square, so the jump is blocked
-                            return false;
-                        }
-                    }
+            }
+        } else if (srcCol == destCol) {
+            // Check if there are any water squares between the source and destination row
+            int minRow = Math.min(srcRow, destRow);
+            int maxRow = Math.max(srcRow, destRow);
+            for (int row = minRow + 1; row < maxRow; row++) {
+                ChessboardPoint point = new ChessboardPoint(row, srcCol);
+                if (riverCell.contains(point)) {
+                    // There is a rat on the water square, so the jump is blocked
+                    return false;
                 }
+            }
+        }
 
-                // No water squares blocking the jump
-                return true;
+        // No water squares blocking the jump
+        return true;
 
     }
+
+    public void saveGame(String fileName) {
+        try {
+            FileOutputStream fileOut = new FileOutputStream(fileName);
+            ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
+            objectOut.writeObject(this);
+
+            objectOut.close();
+            fileOut.close();
+
+            System.out.println("The game was successfully saved");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Chessboard loadGame(String fileName) {
+        Chessboard loadedChessboard = null;
+        try {
+            FileInputStream fileIn = new FileInputStream(fileName);
+            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+
+            loadedChessboard = (Chessboard) objectIn.readObject();
+
+            objectIn.close();
+            fileIn.close();
+
+            System.out.println("The game was successfully loaded");
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return loadedChessboard;
+    }
+
+
 
 //    public boolean isValidMove(ChessboardPoint src, ChessboardPoint dest) {
 //

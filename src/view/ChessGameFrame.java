@@ -10,7 +10,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 public class ChessGameFrame extends JFrame {
 
@@ -43,6 +45,8 @@ public class ChessGameFrame extends JFrame {
     private Timer timerPlayer2;
     private JLabel timerLabelPlayer1;
     private JLabel timerLabelPlayer2;
+    private JButton saveButton;
+    private JButton loadButton;
 
 
     public ChessGameFrame(int width, int height) {
@@ -117,6 +121,20 @@ public class ChessGameFrame extends JFrame {
         restartButton.setFont(new Font("Arial", Font.BOLD, 20));
         add(restartButton);
 
+        saveButton = new JButton("Save");
+        saveButton.setLocation(WIDTH-220,90);
+        saveButton.setSize(200,30);
+        saveButton.setFont(new Font("Arial", Font.BOLD, 14));
+        saveButton.addActionListener(e -> saveGame());
+        add(saveButton);
+
+        loadButton = new JButton("Load");
+        loadButton.setLocation(WIDTH-220,130);
+        loadButton.setSize(200,30);
+        loadButton.setFont(new Font("Arial", Font.BOLD, 14));
+        loadButton.addActionListener(e -> showLoadGameScreen());
+        add(loadButton);
+
 
     }
     private void startGame() {
@@ -162,6 +180,38 @@ public class ChessGameFrame extends JFrame {
             e.printStackTrace();
         }
     }
+
+    private void saveGame(){
+        String fileName = JOptionPane.showInputDialog("Please input the file name");
+
+        try{
+            FileOutputStream fileOut = new FileOutputStream(fileName);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(chessboard);
+            out.close();
+            fileOut.close();
+            System.out.println("Serialized data is saved in " + fileName);
+        }catch(IOException i){
+            i.printStackTrace();
+        }
+    }
+    private void showLoadGameScreen(){
+        //todo
+    }
+//    private void loadGame(String fileName) {
+//        try {
+//            FileInputStream fileIn = new FileInputStream(fileName);
+//            ObjectInputStream in = new ObjectInputStream(fileIn);
+//            chessboard savedChessboard = (chessboard) in.readObject();
+//            in.close();
+//            fileIn.close();
+//            chessboard = savedChessboard;
+//
+//            System.out.println("Serialized data is loaded from " + fileName);
+//        } catch (IOException |ClassNotFoundException i){
+//            i.printStackTrace();
+//        }
+//    }//todo
 
     private void startTimer(){
         if(!isTimer1Running){

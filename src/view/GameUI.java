@@ -112,12 +112,26 @@ import java.awt.event.ActionListener;
                     }
                 });
                 buttonPanel.add(personalMatchButton);
+                matchButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        showChessboardScreen(previousFrame);
+                    }
+                });
+                buttonPanel.add(matchButton);
 
 
 
 
                 // 创建人机按钮
                 JButton aiButton = createButton("AI");
+                aiButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        showChessboardScreen(previousFrame);
+                    }
+                });
+
                 buttonPanel.add(aiButton);
 
                 // 创建返回按钮
@@ -172,7 +186,7 @@ import java.awt.event.ActionListener;
                 // 创建头像和用户名区域
                 JPanel profilePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
                 ImageIcon userIcon = new ImageIcon("/img/用户.png");
-                JLabel userLabel = new JLabel("UserID:");
+                JLabel userLabel = new JLabel("UserID: 312512");
                 JLabel profileLabel = new JLabel(userIcon);
                 profileLabel.setPreferredSize(new Dimension(50, 50));
                 profilePanel.add(profileLabel);
@@ -187,7 +201,7 @@ import java.awt.event.ActionListener;
 
                 // 创建对局数和获胜局数区域
                 JPanel gamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-                JLabel gameLabel = new JLabel("All games：0   Win：0   Winner present：0.0%");
+                JLabel gameLabel = new JLabel("All games：12   Win：7   Winner present：58.33%");
                 gamePanel.add(gameLabel);
                 panel.add(gamePanel);
 
