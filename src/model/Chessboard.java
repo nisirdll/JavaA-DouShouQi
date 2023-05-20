@@ -13,7 +13,7 @@ public class Chessboard {
     private final Set<ChessboardPoint> riverCell = new HashSet<>();
 
     public Chessboard() {
-        this.grid = new Cell[Constant.CHESSBOARD_ROW_SIZE.getNum()][Constant.CHESSBOARD_COL_SIZE.getNum()];//19X19
+        this.grid = new Cell[Constant.CHESSBOARD_ROW_SIZE.getNum()][Constant.CHESSBOARD_COL_SIZE.getNum()];
         initGrid();
         initPieces();
     }
@@ -369,8 +369,9 @@ public boolean isValidMove(ChessboardPoint src, ChessboardPoint dest) {
         return true;
     }
     public void restart() {
-        this.initGrid();
-        this.initPieces();
+        this.grid = new Cell[Constant.CHESSBOARD_ROW_SIZE.getNum()][Constant.CHESSBOARD_COL_SIZE.getNum()];
+        initGrid();
+        initPieces();
     }
 }
 

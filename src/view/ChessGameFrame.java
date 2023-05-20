@@ -1,5 +1,6 @@
 package view;
 
+import controller.GameController;
 import model.Chessboard;
 
 import javax.sound.sampled.*;
@@ -17,6 +18,7 @@ public class ChessGameFrame extends JFrame {
     private JLabel currentPlayerLabel;
     private boolean isPlayer1Turn;
     private int roundCount;
+    private JButton restartButton;
 
 
     private  final int HEIGHT ;
@@ -40,7 +42,7 @@ public class ChessGameFrame extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
         setLayout(null);
-//        chessboard = new Chessboard(this);
+        chessboard = new Chessboard();
         timerLabelPlayer1 = createTimerLabel(720, 720);
         add(timerLabelPlayer1);
 
@@ -59,11 +61,19 @@ public class ChessGameFrame extends JFrame {
         addHelloButton();
         playMusic();
         addToggleMusicButton();
+
+        restartButton = new JButton("Restart");
+        restartButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                restartGame();
+            }
+        });
+        restartButton.setLocation(HEIGHT, HEIGHT/10 + 180);
+        restartButton.setSize(200, 50);
+        restartButton.setFont(new Font("Arial", Font.BOLD, 20));
+        add(restartButton);
     }
-
-
-
-
     private void startGame() {
         addChessboard();
         Random random = new Random();
@@ -81,10 +91,14 @@ public class ChessGameFrame extends JFrame {
         currentPlayerLabel.setLocation(WIDTH / 2 - 100, HEIGHT / 20 + 40);
         add(currentPlayerLabel);
 
-        // 添加行棋的逻辑
-
-
-
+    }
+    private void restartGame(){
+        dispose();
+        SwingUtilities.invokeLater(() -> {
+            ChessGameFrame mainFrame = new ChessGameFrame(1100, 810);
+            GameController gameController = new GameController(mainFrame.getChessboardComponent(), new Chessboard(),new Chessboard());
+            mainFrame.setVisible(true);
+        });
 
     }
     public ChessboardComponent getChessboardComponent() {
@@ -168,9 +182,7 @@ public class ChessGameFrame extends JFrame {
         }
         isPlayer1Turn = !isPlayer1Turn;
     }
-    public static void handleMoveChessPiece(){
 
-    }
 
 
     private JLabel createTimerLabel(int x, int y) {
@@ -188,19 +200,14 @@ public class ChessGameFrame extends JFrame {
     }
     private class TimerActionListener implements ActionListener {
         private JLabel timerLabel;
-        private int minutes = 10;
-        private int seconds = 0;
+        private int minutes;
+        private int seconds;
 
         public TimerActionListener(JLabel timerLabel) {
             this.timerLabel = timerLabel;
+            this.minutes = 10;
+            this.seconds = 0;
         }
-        public Timer getTimerPlayer1() {
-            return timerPlayer1;
-        }
-        public Timer getTimerPlayer2() {
-            return timerPlayer2;
-        }
-
 
         @Override
         public void actionPerformed(ActionEvent e) {

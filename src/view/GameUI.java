@@ -69,7 +69,7 @@ import java.awt.event.ActionListener;
             private static JFrame createFrame(String title) {
                 JFrame frame = new JFrame(title);
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.setSize(400, 300);
+                frame.setSize(600, 900);
                 frame.setLocationRelativeTo(null); // 居中显示
                 return frame;
             }
