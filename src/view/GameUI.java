@@ -10,8 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
     public class GameUI {
-
-            public static void main(String[] args) {
+        public static void main(String[] args) {
                 SwingUtilities.invokeLater(() -> {
                     // 创建初始界面
                     JFrame initialFrame = createFrame("Jungle");
@@ -128,7 +127,7 @@ import java.awt.event.ActionListener;
                 aiButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        showChessboardScreen(previousFrame);
+                        showAIScreen(playFrame);
                     }
                 });
 
@@ -148,6 +147,64 @@ import java.awt.event.ActionListener;
                 playFrame.add(buttonPanel, BorderLayout.CENTER);
                 playFrame.setVisible(true);
             }
+
+            private static void showAIScreen(JFrame previousFrame){
+                previousFrame.dispose(); // 关闭初始界面
+
+                JFrame AIFrame = createFrame("AIFrame");
+                JPanel buttonPanel = createButtonPanel();
+
+                // 创建匹配按钮
+                JButton HardButton = createButton("Hard");
+                HardButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        AIFrame.setVisible(false);
+
+                        ChessGameFrame chessGameFrame = new ChessGameFrame(1100,800);
+                new GameController(chessGameFrame.getChessboardComponent(), new Chessboard(),new Chessboard());
+                        chessGameFrame.getChessboardComponent().gameController.AI=1;
+                        chessGameFrame.setVisible(true);
+                        chessGameFrame.previousFrame=AIFrame;
+                    }
+                });
+                buttonPanel.add(HardButton);
+                // 创建个人对战按钮
+                JButton EasyButton = createButton("Easy");
+                EasyButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        AIFrame.setVisible(false);
+
+                        ChessGameFrame chessGameFrame = new ChessGameFrame(1100,800);
+                        new GameController(chessGameFrame.getChessboardComponent(), new Chessboard(),new Chessboard());
+                        chessGameFrame.getChessboardComponent().gameController.AI=2;
+                        chessGameFrame.setVisible(true);
+                        chessGameFrame.previousFrame=AIFrame;
+                    }
+                });
+                buttonPanel.add(EasyButton);
+
+
+
+
+
+
+                // 创建返回按钮
+                JButton backButton = createButton("Back");
+                backButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        AIFrame.dispose(); // 关闭AI界面
+                        previousFrame.setVisible(true); // 显示初始界面
+                    }
+                });
+                buttonPanel.add(backButton);
+
+                AIFrame.add(buttonPanel, BorderLayout.CENTER);
+                AIFrame.setVisible(true);
+            }
+
 
             private static void showWatchScreen(JFrame previousFrame) {
                 previousFrame.dispose(); // 关闭初始界面
@@ -296,9 +353,13 @@ import java.awt.event.ActionListener;
                 prevoiusFrame.dispose();
 
                 ChessGameFrame chessGameFrame = new ChessGameFrame(1100,800);
-                new GameController(chessGameFrame.getChessboardComponent(), new Chessboard(),new Chessboard());
+                chessGameFrame.getChessboardComponent().gameController.AI=0;
+//                new GameController(chessGameFrame.getChessboardComponent(), new Chessboard(),new Chessboard());
                 chessGameFrame.setVisible(true);
+                chessGameFrame.previousFrame=prevoiusFrame;
         }
+
+
 
 
         public void setVisible(boolean b) {

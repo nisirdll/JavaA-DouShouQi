@@ -2,6 +2,7 @@ package view;
 
 import controller.GameController;
 import model.Chessboard;
+import model.PlayerColor;
 
 import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
@@ -10,9 +11,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.util.TimerTask;
 
 public class ChessGameFrame extends JFrame {
 
@@ -32,8 +32,11 @@ public class ChessGameFrame extends JFrame {
     private Chessboard chessboard;
     private JLabel currentPlayerLabel;
     private boolean isPlayer1Turn;
-    private int roundCount;
+    private int roundCount=0;
     private JButton restartButton;
+
+    public JFrame previousFrame;
+
 
 
     private  final int HEIGHT ;
@@ -45,8 +48,14 @@ public class ChessGameFrame extends JFrame {
     private Timer timerPlayer2;
     private JLabel timerLabelPlayer1;
     private JLabel timerLabelPlayer2;
+
+    private JLabel currentPlayer;
     private JButton saveButton;
     private JButton loadButton;
+
+    private JButton regretButton;
+
+    private JButton replayButton;
 
 
     public ChessGameFrame(int width, int height) {
@@ -68,13 +77,72 @@ public class ChessGameFrame extends JFrame {
 
         timerPlayer1 = createTimer(timerLabelPlayer1);
         timerPlayer2 = createTimer(timerLabelPlayer2);
+        startGame();
+        new GameController(this.getChessboardComponent(), new Chessboard(),new Chessboard());
 
-        roundCountLabel = new JLabel("Round: " + roundCount);
+        roundCountLabel = new JLabel("回合数: " + chessboardComponent.gameController.getCount());
         roundCountLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        roundCountLabel.setSize(100, 30);
+        roundCountLabel.setSize(200, 30);
         roundCountLabel.setLocation(WIDTH / 2 - 50, HEIGHT/20);
         add(roundCountLabel);
-        startGame();
+
+        currentPlayer = new JLabel("Current player: " + (chessboardComponent.gameController.currentPlayer==PlayerColor.BLUE ? "BLUE":"RED"));
+        currentPlayer.setFont(new Font("Arial", Font.BOLD, 24));
+        currentPlayer.setSize(400, 30);
+        currentPlayer.setLocation(WIDTH / 2 - 400, HEIGHT/20);
+        add(currentPlayer);
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                // task to run goes here
+//                if(chessboardComponent.gameController.currentPlayer== PlayerColor.RED){
+//                    ImageIcon ima=new ImageIcon("./images/REDTURN.png");
+//                    ima.setImage(ima.getImage().getScaledInstance(150,170,0));
+//                    turn.setIcon(ima);
+//                }
+//                else {
+//                    ImageIcon ima=new ImageIcon("./images/BLUETURN.png");
+//                    ima.setImage(ima.getImage().getScaledInstance(150,170,0));
+//                    turn.setIcon(ima);
+//
+//                }
+//                statusLabel.repaint();
+                currentPlayer.setText("Current Player: " + (chessboardComponent.gameController.currentPlayer==PlayerColor.BLUE ? "BLUE":"RED"));
+                currentPlayer.repaint();
+                roundCountLabel.setText("Round: " +String.valueOf(chessboardComponent.gameController.getCount()));
+                roundCountLabel.repaint();
+
+
+//                if(chessboardComponent.gameController.win()==1){
+//                    JOptionPane.showMessageDialog(null,"红方胜");this.cancel();redWonTime++;
+////                    JOptionPane.showConfirmDialog(null,"是否退出游戏？","退出游戏？",JOptionPane.YES_NO_CANCEL_OPTION);
+//                    int decide=JOptionPane.showConfirmDialog(null,"是否退出游戏？","退出游戏？",JOptionPane.YES_NO_CANCEL_OPTION);
+//                    if(decide==JOptionPane.YES_OPTION){
+//                        System.exit(0);
+//                    }
+//                }
+//                else if(chessboardComponent.gameController.win()==2){
+//                    JOptionPane.showMessageDialog(null,"蓝方胜");this.cancel();blueWonTime++;
+//                    //  JOptionPane.showConfirmDialog(null,"是否退出游戏？","退出游戏？",JOptionPane.YES_NO_CANCEL_OPTION);
+//                    int decide=JOptionPane.showConfirmDialog(null,"是否退出游戏？","退出游戏？",JOptionPane.YES_NO_CANCEL_OPTION);
+//                    if(decide==JOptionPane.YES_OPTION){
+//                        System.exit(0);
+//                    }
+//                }
+            }
+        };
+        java.util.Timer timer = new java.util.Timer();
+        long wait = 700;
+        // 定义每次执行的间隔时间
+        long Period = 700;
+        // schedules the task to be run in an interval
+        // 安排任务在一段时间内运行
+        timer.scheduleAtFixedRate(task, wait, Period);
+//        add(statusLabel);
+//        add();
+
+
+
         addHelloButton();
         playMusic();
         addToggleMusicButton();
@@ -85,6 +153,7 @@ public class ChessGameFrame extends JFrame {
         startTimerButton.setSize(120, 30);
         startTimerButton.setFont(new Font("Arial", Font.BOLD, 14));
         startTimerButton.addActionListener(e -> startTimer());
+
         add(startTimerButton);
 
         stopTimerButton = new JButton("Red Turn");
@@ -135,8 +204,35 @@ public class ChessGameFrame extends JFrame {
         loadButton.addActionListener(e -> showLoadGameScreen());
         add(loadButton);
 
+        regretButton = new JButton("Regret");
+        regretButton.setLocation(HEIGHT, HEIGHT/10 + 240);
+        regretButton.setSize(200, 50);
+        regretButton.setFont(new Font("Arial", Font.BOLD, 20));
+        add(regretButton);
+
+        regretButton.addActionListener(e -> {
+            System.out.println("Click regret");
+            chessboardComponent.gameController.regretOneStep();
+//            if (view.controller.AIPlaying){
+//                view.controller.regretOneStep();
+//            }
+        });
+
+        replayButton = new JButton("Replay");
+        replayButton.setLocation(HEIGHT, HEIGHT/10 + 300);
+        replayButton.setSize(200, 50);
+        replayButton.setFont(new Font("Arial", Font.BOLD, 20));
+        add(replayButton);
+
+        replayButton.addActionListener(e -> {
+            System.out.println("Click playback");
+            chessboardComponent.gameController.playback();
+//            view.controller.timer.time = 20;
+        });
 
     }
+
+
     private void startGame() {
         addChessboard();
 //        Random random = new Random();
@@ -146,11 +242,11 @@ public class ChessGameFrame extends JFrame {
 
         timerPlayer1.start();
 
-        roundCountLabel = new JLabel("Round: " + roundCount);
-        roundCountLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        roundCountLabel.setSize(100, 30);
-        roundCountLabel.setLocation(WIDTH / 2 - 50, HEIGHT/20);
-        add(roundCountLabel);
+//        roundCountLabel = new JLabel("Round: " + roundCount);
+//        roundCountLabel.setFont(new Font("Arial", Font.BOLD, 24));
+//        roundCountLabel.setSize(200, 30);
+//        roundCountLabel.setLocation(WIDTH / 2 - 50, HEIGHT/20);
+//        add(roundCountLabel);
 
 
 
@@ -182,21 +278,17 @@ public class ChessGameFrame extends JFrame {
     }
 
     private void saveGame(){
-        String fileName = JOptionPane.showInputDialog("Please input the file name");
-
-        try{
-            FileOutputStream fileOut = new FileOutputStream(fileName);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(chessboard);
-            out.close();
-            fileOut.close();
-            System.out.println("Serialized data is saved in " + fileName);
-        }catch(IOException i){
-            i.printStackTrace();
+        System.out.println("Click save");
+        String path = JOptionPane.showInputDialog("存档名");
+        while (path.equals("")){
+            JOptionPane.showMessageDialog(null, "存档名不能为空");
+            path = JOptionPane.showInputDialog("存档名");
         }
+        chessboardComponent.gameController.saveGame(path);
     }
     private void showLoadGameScreen(){
         //todo
+        boolean b = chessboardComponent.gameController.loadGame();
     }
 //    private void loadGame(String fileName) {
 //        try {
@@ -247,6 +339,7 @@ public class ChessGameFrame extends JFrame {
             clip.stop();
             new GameUI().setVisible(true);
             dispose();
+            previousFrame.setVisible(true);
         });
         button.setLocation(HEIGHT, HEIGHT/10 + 120);
         button.setSize(200, 50);

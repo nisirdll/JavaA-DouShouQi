@@ -13,6 +13,8 @@ public class CellComponent extends JPanel {
     public boolean isTrap = false;
     public boolean isDen = false;
 
+    public boolean canStep;
+
     public CellComponent(Color background, Point location, int size) {
         setLayout(new GridLayout(1,1));
         setLocation(location);
@@ -33,4 +35,11 @@ public class CellComponent extends JPanel {
             }
         }
     }
+    public void setBackground(Color background) {
+        this.background = background;
+    }
+    public Color getBackground() {
+        return background;
+    }
+
 }

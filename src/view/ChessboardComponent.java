@@ -7,6 +7,7 @@ import model.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.util.Collection;
 import java.util.HashSet;
 
 import java.util.Set;
@@ -24,7 +25,7 @@ public class ChessboardComponent extends JComponent {
     private final Set<ChessboardPoint> densCell = new HashSet<>();
     private final Set<ChessboardPoint> trapCell = new HashSet<>();
 
-    private GameController gameController;
+    public GameController gameController;
 
     private Color Brown = new Color (165, 42, 42, 255) ;//Trap的颜色
     private Color Yellow = new Color(255, 255, 0); ;//Den的颜色
@@ -113,8 +114,9 @@ public class ChessboardComponent extends JComponent {
                     cell.isTrap = true;
                     this.add(cell);
                 } else if (densCell.contains(temp)) {
-                    cell = new CellComponent(Yellow, calculatePoint(k, b), CHESS_SIZE);
+                    cell = new CellComponent(Yellow , calculatePoint(k, b), CHESS_SIZE);
                     cell.isDen = true;
+                    this.add(cell);
                 }else {
                     cell = new CellComponent(TableColor, calculatePoint(k, b), CHESS_SIZE);
                     this.add(cell);
@@ -141,6 +143,16 @@ public class ChessboardComponent extends JComponent {
         return chess;
     }
 
+    public void removeChessComponent() {
+        for (int i = 0; i < CHESSBOARD_ROW_SIZE.getNum(); i++) {
+            for (int j = 0; j < CHESSBOARD_COL_SIZE.getNum(); j++) {
+                try {
+                    gridComponents[i][j].remove(0);
+                } catch (Exception e){}
+            }
+        }
+
+    }
     public CellComponent getGridComponentAt(ChessboardPoint point) {
         return gridComponents[point.getRow()][point.getCol()];
     }
@@ -153,7 +165,9 @@ public class ChessboardComponent extends JComponent {
         return new Point(col * CHESS_SIZE, row * CHESS_SIZE);
     }
 
-
+    public CellComponent[][] getGridComponents() {
+        return gridComponents;
+    }
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -172,6 +186,18 @@ public class ChessboardComponent extends JComponent {
                 gameController.onPlayerClickChessPiece(getChessboardPoint(e.getPoint()), (AnimalChessComponent) clickedComponent.getComponents()[0]);
             }
         }
+    }
+
+    public Set<ChessboardPoint> getRiverCell() {
+        return riverCell;
+    }
+
+    public Set<ChessboardPoint> getDensCell() {
+        return densCell;
+    }
+
+    public Set<ChessboardPoint> getTrapCell() {
+        return trapCell;
     }
 }
 //测试git使用

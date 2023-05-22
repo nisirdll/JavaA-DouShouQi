@@ -19,6 +19,11 @@ public class ChessPiece {
         this.type = type;
         this.address = address;
     }
+    public ChessPiece(PlayerColor owner, String name, int rank) {
+        this.owner = owner;
+        this.name = name;
+        this.rank = rank;
+    }
     public CellType getType(){return type;}
     public boolean canCapture(ChessPiece target) {
         if (target == null) {

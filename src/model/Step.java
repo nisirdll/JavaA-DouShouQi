@@ -1,68 +1,37 @@
 package model;
 
-import view.AnimalChessComponent;
-
 public class Step {
-    public int getValue() {
-        return Value;
+    public ChessboardPoint src;
+    public ChessboardPoint dest;
+    public PlayerColor color;
+    public ChessPiece captured;
+
+
+    public Step(ChessboardPoint src, ChessboardPoint dest, PlayerColor color) {
+        this.src = src;
+        this.dest = dest;
+        this.color = color;
+        captured = null;
     }
 
-    public void setValue(int value) {
-        Value = value;
-    }
-
-    int Value=0 ;
-    private ChessboardPoint fromWhere;
-
-    private ChessboardPoint toWhere;
-    private ChessPiece MovedChessPiece;
-    private ChessPiece CapturedChessPiece;
-
-    public AnimalChessComponent getAcc() {
-        return acc;
-    }
-
-    private AnimalChessComponent acc;
-    private int turn;
-
-    public ChessboardPoint getFrom() {
-        return fromWhere;
-    }
-
-    public ChessboardPoint getTo() {
-        return toWhere;
-    }
-
-    public ChessPiece getMovedChessPiece() {
-        return MovedChessPiece;
-    }
-
-    public ChessPiece getCapturedChessPiece() {
-        return CapturedChessPiece;
-    }
-
-    public int getTurn() {
-        return turn;
-    }
-
-    public Step(ChessboardPoint fromWhere, ChessboardPoint toWhere, ChessPiece MovedChessPiece, ChessPiece CapturedChessPiece,
-                int turn, AnimalChessComponent acc) {
-        this.fromWhere = fromWhere;
-        this.toWhere = toWhere;
-        this.MovedChessPiece = MovedChessPiece;
-        this.CapturedChessPiece = CapturedChessPiece;
-        this.turn = turn;
-        this.acc = acc;
+    public Step(ChessboardPoint src, ChessboardPoint dest, PlayerColor color, ChessPiece captured) {
+        this.src = src;
+        this.dest = dest;
+        this.color = color;
+        this.captured = captured;
     }
 
     @Override
     public String toString() {
-        return "Step{" +
-                "fromWhere=" + fromWhere +
-                ", toWhere=" + toWhere +
-                ", MovedChessPiece=" + MovedChessPiece +
-                ", CapturedChessPiece=" + CapturedChessPiece +
-                ", turn=" + turn +
-                '}';
+        if (captured == null)
+            return (color == PlayerColor.BLUE ? "b " : "r ") +
+                    "(" + src.getRow() + "," + src.getCol() + ") " +
+                    "(" + dest.getRow() +"," + dest.getCol() + ") " +
+                    "null";
+        else
+            return (color == PlayerColor.BLUE ? "b " : "r ") +
+                    "(" + src.getRow() + "," + src.getCol() + ") " +
+                    "(" + dest.getRow() +"," + dest.getCol() + ") " +
+                    captured.getName();
     }
 }
